@@ -1,5 +1,5 @@
 """
-WSGI config for wulo_Blog project.
+WSGI config for From_My_Life project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'wulo_Blog.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'From_My_Life.settings')
 
 application = get_wsgi_application()

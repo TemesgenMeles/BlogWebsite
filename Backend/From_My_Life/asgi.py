@@ -1,5 +1,5 @@
 """
-ASGI config for wulo_Blog project.
+ASGI config for From_My_Life project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'wulo_Blog.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'From_My_Life.settings')
 
 application = get_asgi_application()
