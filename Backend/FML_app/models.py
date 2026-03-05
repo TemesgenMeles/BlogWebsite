@@ -26,7 +26,7 @@ class Post(models.Model):
         ("publish", "Publish")
     )
     title = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, null=True, blank=True)
     main_content = models.TextField()
     excerpt = models.TextField(blank=True, null=True)
     content1 = models.TextField(blank=True, null=True)
@@ -57,7 +57,7 @@ class Post_Image(models.Model):
         (7, "Image 7"),
         (8, "Image 8")
     )
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='images')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='images') #we use this 'images' in the serializer
     position = models.IntegerField(choices=position_options)
     image = models.ImageField(upload_to='./images/post_images/')
     discription = models.TextField(blank=True, null=True)

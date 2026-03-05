@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import generics
-from .serializers import PostSerializer
+from .serializers import PostSerializer, PostImageSerializer
 from FML_app.models import Post
 
 # Create your views here.
