@@ -27,12 +27,10 @@ const Posts = () => {
                     <li key={post.id}>
                         <h3>{post.title}</h3>
                         <p>{post.content1}</p>
-                        {Array.isArray(post.images) && post.images
-                        .filter(img => img.position === 2)
-                        .map((img, i) => (
-                            <img key={i} src={img.image} alt={`Image ${i}`} />
-                            ))
-                        }
+                        {Array.isArray(post.images) && (() => {
+                            const img = post.images.find(img => img.position === 2);
+                            return img ? <img key={img.id} src={img.image} alt="Image" /> : null;
+                        })()}
                     </li>
                 ))}
             </ul>

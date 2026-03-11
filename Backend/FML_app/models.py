@@ -36,6 +36,7 @@ class Post(models.Model):
     catagory = models.ManyToManyField(Catagory)
     published_date = models.DateTimeField(default=timezone.now)
     status = models.CharField(max_length=10, choices=options, default="publish")
+    latest = models.BooleanField(default=False)
     objects = models.Manager()  # Default manager
     posted_objects = PostObjects()  # Custom manager for published posts
 
