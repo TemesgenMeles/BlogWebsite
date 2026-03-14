@@ -71,8 +71,7 @@
 
 .leatest_post {
     padding-inline: 20px;
-    min-height: 100vh;
-    margin-top: -15px;
+    padding-block: 80px 40px;
 }
 
 .leatest_post .title {
@@ -99,7 +98,7 @@
     color: var(--primary-color);
     font-family: 'Roboto', sans-serif;
     font-weight: lighter;
-    margin-top: -15px;
+    margin-top: 5px;
 }
 
 .posts_container {
@@ -116,13 +115,15 @@
     padding: 20px;
     width: 380px;
     min-width: 380px;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
     display: flex;
     flex-direction: column;
 }
 
 .post_card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 10px 20px -5px var(--primary-color);
+    background-color: var(--background-color);
 }
 
 .post_image_container {
@@ -168,22 +169,27 @@
 
 .badge_showcase {
     background-color: var(--cat-showcase);
+    box-shadow: 0 0 15px var(--cat-showcase);
 }
 
 .badge_education {
     background-color: var(--cat-education);
+    box-shadow: 0 0 15px var(--cat-education);
 }
 
 .badge_business {
     background-color: var(--cat-business);
+    box-shadow: 0 0 15px var(--cat-business);
 }
 
 .badge_insight {
     background-color: var(--cat-insight);
+    box-shadow: 0 0 15px var(--cat-insight);
 }
 
 .badge_lifestyle {
     background-color: var(--cat-lifestyle);
+    box-shadow: 0 0 15px var(--cat-lifestyle);
 }
 
 .post_card .post_title {
@@ -319,6 +325,7 @@
     justify-content: center;
     gap: 30px;
     margin-top: 40px;
+    margin-bottom: 60px;
 }
 
 .category_card {
@@ -447,7 +454,7 @@
 
 /* CTA Section */
 .cta_section {
-    padding: 80px 20px;
+    padding: 40px 20px;
     background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('home_bg.png') no-repeat center/cover;
     text-align: center;
     color: var(--primary-color);
