@@ -167,7 +167,7 @@ const Home = () => {
                     </div>
                 </div>
                 <div className="footer_bottom">
-                    <p>&copy; {new Date().getFullYear()} Temesgen. All rights reserved.</p>
+                    <p>&copy; {new Date().getFullYear()} Temesgen &ndash; All rights reserved.</p>
                 </div>
             </footer>
         </div>

@@ -1,5 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
 :root {
     --primary-color: #46c855;
@@ -39,6 +44,10 @@ body {
     align-items: center;
     position: fixed;
     top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: var(--body-max-width);
     background-color: transparent;
     z-index: 100;
     padding: 5px 20px;
@@ -89,3 +98,92 @@ body {
     color: var(--primary-color);
     font-size: 18px;
 }
+
+/* Mobile Navigation Styles */
+.mobile_menu_btn {
+    display: none;
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    z-index: 101;
+}
+
+@media (max-width: 900px) {
+    .navigation {
+        width: 100%;
+        max-width: 100%;
+        left: 0;
+        right: 0;
+        transform: none;
+        padding: 10px 25px;
+        background-color: var(--background-color);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo_container {
+        width: 50%;
+    }
+
+    .logo_container img {
+        width: 220px;
+    }
+
+    .mobile_menu_btn {
+        display: block;
+        color: var(--text-color);
+    }
+
+    .nav_container {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 260px;
+        height: 100vh;
+        background-color: var(--background-color);
+        border-left: 1px solid var(--primary-color);
+        transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        padding-top: 80px;
+        z-index: 100;
+        display: block;
+        box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .nav_container.mobile_open {
+        right: 0;
+    }
+
+    .nav_list {
+        flex-direction: column;
+        align-items: flex-start;
+        padding-left: 40px;
+        gap: 25px;
+    }
+
+    .nav_list li a {
+        font-size: 1.1rem;
+        color: var(--text-color);
+    }
+
+    .nav_list li a:hover,
+    .nav_list li a.active {
+        color: var(--primary-color);
+        padding-left: 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    .navigation {
+        padding: 8px 15px;
+        left: 0;
+        right: 0;
+    }
+    
+    .logo_container img {
+        width: 180px;
+    }
+    
+    .nav_container {
+        width: 80%;
+    }
+}

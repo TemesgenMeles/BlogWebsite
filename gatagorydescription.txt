@@ -185,3 +185,32 @@ You are building:
 A personal brand website.
 
 So every category must represent who you are becoming.
+
+
+
+
+
+Core Pages
+Home → The landing page with highlights or latest posts.
+
+About → A short introduction about you or the blog’s purpose.
+
+Blog → The main listing of all your posts.
+
+📚 Optional but Recommended
+Categories/Topics → If your blog covers multiple themes (e.g., Tech, Lifestyle, Education).
+
+Contact → A way for readers to reach you (form, email, or social links).
+
+Resources/Projects → If you share guides, tools, or personal projects.
+
+Portfolio → Useful if your blog also showcases your professional work.
+
+FAQ → Helps answer common questions about your content or services.
+
+✨ Extras (depending on your goals)
+Newsletter/Subscribe → For building an audience.
+
+Events/Community → If you want to engage locally or with groups.
+
+Shop/Services → If you plan to monetize (courses, merch, consulting).
