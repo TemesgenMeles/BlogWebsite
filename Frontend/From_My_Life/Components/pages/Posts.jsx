@@ -8,7 +8,7 @@ const Posts = () => {
             const response = await fetch('http://127.0.0.1:8000/posts/')
             const data = await response.json()
             console.log(data)
-            
+
             setValue(data)
         } catch (error) {
             console.error('Error fetching posts:', error)
