@@ -44,7 +44,7 @@ const Contact = () => {
             <div className="contact_card">
               <h2>Direct Connect</h2>
               <p>I’m always open to discussing new projects, creative ideas or opportunities to be part of your visions.</p>
-              
+
               <div className="contact_details">
                 <div className="contact_item">
                   <div className="contact_icon_box">
@@ -52,7 +52,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h4>Email</h4>
-                    <p>contact@temesgen.me</p>
+                    <p>temesgen12m1@gmail.com</p>
                   </div>
                 </div>
 
@@ -62,7 +62,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h4>Phone</h4>
-                    <p>+251 912 345 678</p>
+                    <p>+251 902 127 832</p>
                   </div>
                 </div>
 
@@ -89,7 +89,7 @@ const Contact = () => {
                   <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="social_btn linkedin">
                     <Linkedin size={20} />
                   </a>
-                  <a href="https://github.com" target="_blank" rel="noreferrer" className="social_btn github">
+                  <a href="https://github.com/TemesgenMeles" target="_blank" rel="noreferrer" className="social_btn github">
                     <Github size={20} />
                   </a>
                 </div>
@@ -107,11 +107,11 @@ const Contact = () => {
             <form onSubmit={handleSubmit} className="premium_contact_form">
               <div className="form_group">
                 <label htmlFor="name">Full Name</label>
-                <input type="text" id="name" placeholder="John Doe" required />
+                <input type="text" id="name" placeholder="Example: Temesgen Meles" required />
               </div>
               <div className="form_group">
                 <label htmlFor="email">Email Address</label>
-                <input type="email" id="email" placeholder="john@example.com" required />
+                <input type="email" id="email" placeholder="Example: teme@gmail.com" required />
               </div>
               <div className="form_group">
                 <label htmlFor="subject">Subject</label>
@@ -136,13 +136,13 @@ const Contact = () => {
             <p>I’m based in Dessie, Amhara Region, Ethiopia. Here’s where you can find me.</p>
           </div>
           <div className="map_container">
-            <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62474.34685023907!2d39.60528657662892!3d11.13401764667821!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1646e3362a40498b%3A0xc39f88d927dce7e!2sDessie!5e0!3m2!1sen!2set!4v1710595000000!5m2!1sen!2set" 
-              width="100%" 
-              height="450" 
-              style={{ border: 0, borderRadius: '24px' }} 
-              allowFullScreen="" 
-              loading="lazy" 
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62474.34685023907!2d39.60528657662892!3d11.13401764667821!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1646e3362a40498b%3A0xc39f88d927dce7e!2sDessie!5e0!3m2!1sen!2set!4v1710595000000!5m2!1sen!2set"
+              width="100%"
+              height="450"
+              style={{ border: 0, borderRadius: '24px' }}
+              allowFullScreen=""
+              loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               title="Location Map"
             ></iframe>
