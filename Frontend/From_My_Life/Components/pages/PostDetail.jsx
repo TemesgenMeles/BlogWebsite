@@ -152,18 +152,53 @@ const PostDetail = () => {
 
                         {/* Main Text Content */}
                         <div className="article_rich_text">
-                            <p className="dropcap">
-                                {post.content1}
-                            </p>
+                            {/* Lead Content */}
+                            {post.main_content && <p className="lead_content">{post.main_content}</p>}
 
-                            {/* Mock additional content for depth */}
+                            {/* Image 1 - Inset Image */}
+                            {post.images?.find(img => img.position === 2) && (
+                                <figure className="article_inset_image">
+                                    <img
+                                        src={post.images.find(img => img.position === 2).image}
+                                        alt="Contextual"
+                                    />
+                                    {post.images.find(img => img.position === 2).discription && (
+                                        <figcaption>{post.images.find(img => img.position === 2).discription}</figcaption>
+                                    )}
+                                </figure>
+                            )}
+
+                            {/* Content Block 1 */}
+                            {post.content1 && <p className="dropcap">{post.content1}</p>}
+
+                            {/* Image 3 & 4 - Gallery Grid */}
+                            {(post.images?.find(img => img.position === 3) || post.images?.find(img => img.position === 4)) && (
+                                <div className="article_gallery_grid">
+                                    {post.images?.find(img => img.position === 3) && (
+                                        <img src={post.images.find(img => img.position === 3).image} alt="Detail view" />
+                                    )}
+                                    {post.images?.find(img => img.position === 4) && (
+                                        <img src={post.images.find(img => img.position === 4).image} alt="Detail view" />
+                                    )}
+                                </div>
+                            )}
+
+                            {/* Content Block 2 */}
+                            {post.content2 && <p>{post.content2}</p>}
+
                             <blockquote>
                                 "Coding isn't just about syntax; it's about solving problems and creating experiences that resonate with people."
                             </blockquote>
 
-                            <p>
-                                Personal growth often happens at the edges of our comfort zone. Whether it's mastering a new framework like React or navigating the complexities of a backend system, every line of code tells a story of persistence and discovery.
-                            </p>
+                            {/* Image 5 - Wide Section Break */}
+                            {post.images?.find(img => img.position === 5) && (
+                                <div className="article_break_image">
+                                    <img src={post.images.find(img => img.position === 5).image} alt="Section Divider" />
+                                </div>
+                            )}
+
+                            {/* Content Block 3 */}
+                            {post.content3 && <p>{post.content3}</p>}
 
                             <div className="in_article_tags">
                                 {['Development', 'Growth', 'Coding'].map(tag => (
