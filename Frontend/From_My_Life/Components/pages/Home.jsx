@@ -1,12 +1,13 @@
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-    ArrowRight, 
-    MonitorPlay, 
-    Coffee, 
-    BookOpen, 
-    Mail, 
-    Twitter, 
-    Linkedin, 
+import {
+    ArrowRight,
+    MonitorPlay,
+    Coffee,
+    BookOpen,
+    Mail,
+    Twitter,
+    Linkedin,
     Github,
     ChevronRight,
     Search,
@@ -15,12 +16,31 @@ import {
 } from 'lucide-react';
 
 const Home = () => {
+    const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/posts/');
+                const data = await response.json();
+                // Filter for latest posts or just take first 3
+                setPosts(data.filter(p => p.latest).slice(0, 3));
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching latest posts:', error);
+                setLoading(false);
+            }
+        };
+        fetchPosts();
+    }, []);
+
     return (
         <div className="home_wrapper">
             {/* Hero Section */}
             <header className="home_page">
                 <div className="logo_container">
-                    <img src="logo.png" alt="Logo" />
+                    <img src="/logo.png" alt="Logo" />
                     <h1>From My Life</h1>
                     <p className="part_logo">Stories, lessons, and reflections worth sharing.</p>
                     <p className="intro">I’m Temesgen, sharing my thoughts, experiences, and lessons learned along the way.</p>
@@ -33,48 +53,38 @@ const Home = () => {
                 <h1 className="title">Latest Posts</h1>
                 <p className="phrase">Catch up on my newest reflections and experiences.</p>
                 <div className="posts_container">
-                    <div className="post_card">
-                        <div className="post_image_container">
-                            <img src="home_bg.png" alt="Post 1" />
-                            <span className="category_badge badge_business">Business</span>
-                        </div>
-                        <h1 className="post_title">Embracing Change: My Journey of Growth</h1>
-                        <div className="post_meta flex_center gap_sm">
-                            <span className="author_name flex_center gap_xs"><User size={14}/> Temesgen</span>
-                            <span className="admin_badge flex_center gap_xs"><ShieldCheck size={14}/> Admin</span>
-                        </div>
-                        <p className="post_excerpt">Business today is more than profit margins; it is about creating value, building trust, and adapting to change. Companies that thrive are those that innovate, listen to customers, and lead with resilience. This post explores three key pillars that shape modern business success.</p>
-                        <Link className="read-more flex_center gap_sm" to="/posts/embracing-change">Read More <ArrowRight size={16} /></Link>
-                    </div>
-                    <div className="post_card">
-                        <div className="post_image_container">
-                            <img src="home_bg.png" alt="Post 2" />
-                            <span className="category_badge badge_education">Education</span>
-                        </div>
-                        <h1 className="post_title">Learning React Advanced Concepts</h1>
-                        <div className="post_meta flex_center gap_sm">
-                            <span className="author_name flex_center gap_xs"><User size={14}/> Temesgen</span>
-                            <span className="admin_badge flex_center gap_xs"><ShieldCheck size={14}/> Admin</span>
-                        </div>
-                        <p className="post_excerpt">React has evolved significantly over the years. Understanding the advanced concepts like React Server Components and fine-grained reactivity is crucial for modern web development. In this article, I cover the patterns I wish I knew earlier.</p>
-                        <Link className="read-more flex_center gap_sm" to="/posts/react-advanced">Read More <ArrowRight size={16} /></Link>
-                    </div>
-                    <div className="post_card">
-                        <div className="post_image_container">
-                            <img src="home_bg.png" alt="Post 3" />
-                            <span className="category_badge badge_insight">Insight</span>
-                        </div>
-                        <h1 className="post_title">The Art of Mindful Productivity</h1>
-                        <div className="post_meta flex_center gap_sm">
-                            <span className="author_name flex_center gap_xs"><User size={14}/> Temesgen</span>
-                            <span className="admin_badge flex_center gap_xs"><ShieldCheck size={14}/> Admin</span>
-                        </div>
-                        <p className="post_excerpt">In a world full of distractions, maintaining focus is harder than ever. I share my personal strategies for setting boundaries, prioritizing deep work, and staying productive without moving into burnout territory.</p>
-                        <Link className="read-more flex_center gap_sm" to="/posts/mindful-productivity">Read More <ArrowRight size={16} /></Link>
-                    </div>
+                    {loading ? (
+                        <p>Loading stories...</p>
+                    ) : (
+                        posts.map(post => (
+                            <div key={post.id} className="post_card">
+                                <div className="post_image_container">
+                                    {post.images && post.images.length > 0 ? (
+                                        <img src={post.images[0].image} alt={post.title} />
+                                    ) : (
+                                        <img src="home_bg.png" alt={post.title} />
+                                    )}
+                                    <div className="card_badge_list">
+                                        {post.catagory?.map(cat => (
+                                            <span key={cat.slug} className={`category_badge badge_${cat.slug || 'insight'}`}>
+                                                {cat.name}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                                <h1 className="post_title">{post.title}</h1>
+                                <div className="post_meta flex_center gap_sm">
+                                    <span className="author_name flex_center gap_xs"><User size={14} /> {post.author.first_name}</span>
+                                    <span className="admin_badge flex_center gap_xs"><ShieldCheck size={14} /> {post.author.is_staff ? 'Admin' : 'User'}</span>
+                                </div>
+                                <p className="post_excerpt">{post.excerpt || post.content1.substring(0, 150) + '...'}</p>
+                                <Link className="read-more flex_center gap_sm" to={`/posts/${post.id}`}>Read More <ArrowRight size={16} /></Link>
+                            </div>
+                        ))
+                    )}
                 </div>
                 <div className="view_all_container">
-                    <Link to="/blog" className="btn_primary flex_center gap_sm inline_flex">View All Posts <ArrowRight size={20} /></Link>
+                    <Link to="/posts" className="btn_primary flex_center gap_sm inline_flex">View All Posts <ArrowRight size={20} /></Link>
                 </div>
             </section>
 
@@ -92,28 +102,28 @@ const Home = () => {
                 <h2 className="section_title">Explore Topics</h2>
                 <div className="categories_grid">
                     <Link to="/category/showcase" className="category_card shadow_showcase">
-                        <MonitorPlay size={40} className="category_icon mb-3" style={{color: 'var(--cat-showcase)'}} />
-                        <h3 style={{color: 'var(--cat-showcase)'}}>Showcase</h3>
+                        <MonitorPlay size={40} className="category_icon mb-3" style={{ color: 'var(--cat-showcase)' }} />
+                        <h3 style={{ color: 'var(--cat-showcase)' }}>Showcase</h3>
                         <p>A deeper dive into my best projects, highlighting key features, tech stacks, and the challenges overcome during development.</p>
                     </Link>
                     <Link to="/category/education" className="category_card shadow_education">
-                        <BookOpen size={40} className="category_icon mb-3" style={{color: 'var(--cat-education)'}} />
-                        <h3 style={{color: 'var(--cat-education)'}}>Education</h3>
+                        <BookOpen size={40} className="category_icon mb-3" style={{ color: 'var(--cat-education)' }} />
+                        <h3 style={{ color: 'var(--cat-education)' }}>Education</h3>
                         <p>Tutorials, continuous learning resources, and guides designed to help you level up your programming and web design skills.</p>
                     </Link>
                     <Link to="/category/business" className="category_card shadow_business">
-                        <BookOpen size={40} className="category_icon mb-3" style={{color: 'var(--cat-business)'}} />
-                        <h3 style={{color: 'var(--cat-business)'}}>Business</h3>
+                        <BookOpen size={40} className="category_icon mb-3" style={{ color: 'var(--cat-business)' }} />
+                        <h3 style={{ color: 'var(--cat-business)' }}>Business</h3>
                         <p>Insights on entrepreneurship, navigating the market, and exploring modern business strategies for independent creators.</p>
                     </Link>
                     <Link to="/category/insight" className="category_card shadow_insight">
-                        <Search size={40} className="category_icon mb-3" style={{color: 'var(--cat-insight)'}} />
-                        <h3 style={{color: 'var(--cat-insight)'}}>Insight</h3>
+                        <Search size={40} className="category_icon mb-3" style={{ color: 'var(--cat-insight)' }} />
+                        <h3 style={{ color: 'var(--cat-insight)' }}>Insight</h3>
                         <p>Deep dives into thought-provoking topics, analyzing trends in technology, and sharing meaningful takeaways and opinions.</p>
                     </Link>
                     <Link to="/category/lifestyle" className="category_card shadow_lifestyle">
-                        <Coffee size={40} className="category_icon mb-3" style={{color: 'var(--cat-lifestyle)'}} />
-                        <h3 style={{color: 'var(--cat-lifestyle)'}}>Lifestyle</h3>
+                        <Coffee size={40} className="category_icon mb-3" style={{ color: 'var(--cat-lifestyle)' }} />
+                        <h3 style={{ color: 'var(--cat-lifestyle)' }}>Lifestyle</h3>
                         <p>Reflections on building better habits, fostering productivity, avoiding burnout, and balancing a tech life with personal well-being.</p>
                     </Link>
                 </div>
@@ -150,7 +160,7 @@ const Home = () => {
                         <h4>Navigation</h4>
                         <div className="footer_links">
                             <Link to="/" className="flex_center gap_xs"><ChevronRight size={16} /> Home</Link>
-                            <Link to="/blog" className="flex_center gap_xs"><ChevronRight size={16} /> Blog</Link>
+                            <Link to="/posts" className="flex_center gap_xs"><ChevronRight size={16} /> Blog</Link>
                             <Link to="/about" className="flex_center gap_xs"><ChevronRight size={16} /> About</Link>
                             <Link to="/contact" className="flex_center gap_xs"><ChevronRight size={16} /> Contact</Link>
                         </div>

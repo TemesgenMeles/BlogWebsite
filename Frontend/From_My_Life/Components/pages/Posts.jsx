@@ -44,7 +44,8 @@ const Posts = () => {
     const filteredPosts = posts.filter(post => {
         const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                             post.content1.toLowerCase().includes(searchQuery.toLowerCase())
-        const matchesCategory = selectedCategory === 'All' || (post.category && post.category === selectedCategory);
+        const matchesCategory = selectedCategory === 'All' || 
+                               (post.catagory && post.catagory.some(c => c.name === selectedCategory));
         return matchesSearch && matchesCategory
     })
 
@@ -61,7 +62,7 @@ const Posts = () => {
                 <div className="container">
                     <div className="header_content">
                         <div className="logo_box">
-                            <img src="logo.png" alt="Logo" className="blog_logo" />
+                            <img src="/logo.png" alt="Logo" className="blog_logo" />
                         </div>
                         <span className="eyebrow">The Collective</span>
                         <h1>From My Life <span>Blog</span></h1>
@@ -116,19 +117,25 @@ const Posts = () => {
                                                         <BookOpen size={40} />
                                                     </div>
                                                 )}
-                                                <div className="card_badge">{post.category || 'Insight'}</div>
+                                                <div className="card_badge_list">
+                                                    {post.catagory?.map(cat => (
+                                                        <div key={cat.slug} className={`card_badge badge_${cat.slug || 'insight'}`}>
+                                                            {cat.name}
+                                                        </div>
+                                                    ))}
+                                                </div>
                                             </div>
                                             
                                             <div className="card_body">
                                                 <div className="card_meta">
-                                                    <span><Calendar size={14} /> {post.date || 'Oct 24, 2023'}</span>
+                                                    <span><Calendar size={14} /> {new Date(post.published_date).toLocaleDateString()}</span>
                                                     <span><Clock size={14} /> 5 min read</span>
                                                 </div>
                                                 <h3 className="card_title">
                                                     <Link to={`/posts/${post.id}`}>{post.title}</Link>
                                                 </h3>
                                                 <p className="card_excerpt">
-                                                    {post.content1.substring(0, 120)}...
+                                                    {post.excerpt || post.content1.substring(0, 120) + '...'}
                                                 </p>
                                                 <Link to={`/posts/${post.id}`} className="read_more_link">
                                                     Read Full Story <ChevronRight size={18} />

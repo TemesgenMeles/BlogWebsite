@@ -1637,7 +1637,6 @@ header.home_page button:hover svg {
     top: 20px;
     right: 20px;
     padding: 6px 14px;
-    background: var(--primary-color);
     color: var(--background-color);
     border-radius: 30px;
     font-size: 0.75rem;
@@ -2010,7 +2009,6 @@ header.home_page button:hover svg {
 
 .category_pill {
     padding: 6px 16px;
-    background: rgba(70, 200, 85, 0.1);
     color: var(--primary-color);
     border-radius: 100px;
     font-size: 0.85rem;
@@ -2261,4 +2259,117 @@ blockquote {
     .article_rich_text {
         font-size: 1.1rem;
     }
+}
+
+/* Like Button Styles */
+.like_btn_detail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 12px 0 !important;
+    height: auto !important;
+    width: 50px !important;
+    border-radius: 30px !important;
+}
+
+.like_count {
+    font-size: 0.7rem;
+    font-weight: 800;
+}
+
+.filled_heart {
+    fill: #ff4757;
+    color: #ff4757 !important;
+    animation: heartPulse 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes heartPulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.4);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Additional Category Colors */
+.badge_tech {
+    background-color: #00d2ff;
+    box-shadow: 0 0 15px #00d2ff;
+}
+
+.badge_life {
+    background-color: #7bed9f;
+    box-shadow: 0 0 15px #7bed9f;
+}
+
+.badge_insights {
+    background-color: #10b981;
+    box-shadow: 0 0 15px #10b981;
+}
+
+.badge_growth {
+    background-color: #ffa502;
+    box-shadow: 0 0 15px #ffa502;
+}
+
+.badge_coding {
+    background-color: #2f3542;
+    box-shadow: 0 0 15px #2f3542;
+}
+
+.category_pill {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Multi-category Layouts */
+.category_pill_list,
+.card_badge_list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.card_badge_list {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    justify-content: flex-end;
+    max-width: 80%;
+    pointer-events: none;
+}
+
+.card_badge_list .card_badge {
+    position: static !important;
+    margin: 0;
+}
+
+/* Category Slug Variations and Fallbacks */
+.badge_bussiness {
+    background-color: var(--cat-business);
+    box-shadow: 0 0 15px var(--cat-business);
+}
+
+.badge_life-style,
+.badge_lifestyle {
+    background-color: var(--cat-lifestyle);
+    box-shadow: 0 0 15px var(--cat-lifestyle);
+}
+
+.badge_tech,
+.badge_technology {
+    background-color: #00d2ff;
+    box-shadow: 0 0 15px #00d2ff;
 }

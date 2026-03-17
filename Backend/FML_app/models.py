@@ -39,6 +39,8 @@ class Post(models.Model):
     latest = models.BooleanField(default=False)
     objects = models.Manager()  # Default manager
     posted_objects = PostObjects()  # Custom manager for published posts
+    likes = models.IntegerField(default=0)
+    dislikes = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title

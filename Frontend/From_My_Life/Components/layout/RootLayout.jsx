@@ -12,7 +12,7 @@ const RootLayout = () => {
         <div className=''>
             <header className='navigation'>
                 <div className=' logo_container'>
-                    <img src="logo_green.png" alt="Logo image"/>
+                    <img src="/logo_green.png" alt="Logo image"/>
                 </div>
 
                 <button className="mobile_menu_btn" onClick={toggleMenu}>

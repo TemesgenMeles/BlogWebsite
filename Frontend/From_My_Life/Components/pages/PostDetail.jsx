@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { 
-    Calendar, User, Clock, ChevronLeft, 
+import {
+    Calendar, User, Clock, ChevronLeft,
     Share2, Twitter, Linkedin, Link as LinkIcon,
-    ArrowRight, BookOpen
+    ArrowRight, BookOpen, Heart
 } from 'lucide-react'
 
 const PostDetail = () => {
@@ -26,6 +26,29 @@ const PostDetail = () => {
         fetchPost()
         window.scrollTo(0, 0)
     }, [id])
+
+    const [liking, setLiking] = useState(false)
+
+    const handleLike = async () => {
+        if (liking) return
+        setLiking(true)
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/posts/${id}/like/`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            if (response.ok) {
+                const updatedPost = await response.json()
+                setPost(updatedPost)
+            }
+        } catch (error) {
+            console.error('Error liking post:', error)
+        } finally {
+            setLiking(false)
+        }
+    }
 
     if (loading) {
         return (
@@ -60,21 +83,28 @@ const PostDetail = () => {
             <header className="article_hero">
                 <div className="container_narrow">
                     <div className="article_meta_header">
-                        <span className="category_pill">{post.category || 'Insight'}</span>
+                        <div className="category_pill_list">
+                            {post.catagory?.map(cat => (
+                                <span key={cat.slug} className={`category_pill badge_${cat.slug || 'insight'}`}>
+                                    {cat.name}
+                                </span>
+                            ))}
+                        </div>
                         <span className="read_time"><Clock size={16} /> 6 min read</span>
                     </div>
                     <h1 className="article_title">{post.title}</h1>
-                    
+
                     <div className="author_meta_box">
                         <div className="author_avatar">
-                            {/* Shortened for premium look */}
-                            <div className="avatar_initials">TM</div>
+                            <div className="avatar_initials">
+                                {post.author?.first_name ? post.author.first_name[0].toUpperCase() : <User size={20} />}
+                            </div>
                         </div>
                         <div className="author_info">
-                            <h4>Temesgen Meles</h4>
+                            <h4>{post.author?.first_name} {post.author?.last_name}</h4>
                             <div className="meta_details">
-                                <span className="meta_item"><Calendar size={14} /> {post.date || 'Oct 24, 2023'}</span>
-                                <span className="meta_item"><User size={14} /> Author</span>
+                                <span className="meta_item"><Calendar size={14} /> {new Date(post.published_date).toLocaleDateString()}</span>
+                                <span className="meta_item"><User size={14} /> {post.author?.is_staff ? 'Admin' : 'Author'}</span>
                             </div>
                         </div>
                     </div>
@@ -85,9 +115,9 @@ const PostDetail = () => {
             <div className="container">
                 <div className="article_featured_image">
                     {Array.isArray(post.images) && post.images.length > 0 ? (
-                        <img 
-                            src={post.images.find(img => img.position === 2)?.image || post.images[0].image} 
-                            alt={post.title} 
+                        <img
+                            src={post.images.find(img => img.position === 1)?.image || post.images[0].image}
+                            alt={post.title}
                         />
                     ) : (
                         <div className="image_fallback_hero">
@@ -105,6 +135,15 @@ const PostDetail = () => {
                         <aside className="share_sidebar_sticky">
                             <span>SHARE</span>
                             <div className="share_icons">
+                                <button
+                                    className="like_btn_detail"
+                                    onClick={handleLike}
+                                    title="Like this story"
+                                    disabled={liking}
+                                >
+                                    <Heart size={20} className={post.likes > 0 ? 'filled_heart' : ''} />
+                                    <span className="like_count">{post.likes}</span>
+                                </button>
                                 <button title="Share on Twitter"><Twitter size={20} /></button>
                                 <button title="Share on LinkedIn"><Linkedin size={20} /></button>
                                 <button title="Copy Link"><LinkIcon size={20} /></button>
@@ -116,12 +155,12 @@ const PostDetail = () => {
                             <p className="dropcap">
                                 {post.content1}
                             </p>
-                            
+
                             {/* Mock additional content for depth */}
                             <blockquote>
                                 "Coding isn't just about syntax; it's about solving problems and creating experiences that resonate with people."
                             </blockquote>
-                            
+
                             <p>
                                 Personal growth often happens at the edges of our comfort zone. Whether it's mastering a new framework like React or navigating the complexities of a backend system, every line of code tells a story of persistence and discovery.
                             </p>
