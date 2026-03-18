@@ -153,7 +153,12 @@ const PostDetail = () => {
                         {/* Main Text Content */}
                         <div className="article_rich_text">
                             {/* Lead Content */}
-                            {post.main_content && <p className="lead_content">{post.main_content}</p>}
+                            {post.main_content && (
+                                <div
+                                    className="lead_content"
+                                    dangerouslySetInnerHTML={{ __html: post.main_content }}
+                                />
+                            )}
 
                             {/* Image 1 - Inset Image */}
                             {post.images?.find(img => img.position === 2) && (
@@ -163,13 +168,18 @@ const PostDetail = () => {
                                         alt="Contextual"
                                     />
                                     {post.images.find(img => img.position === 2).discription && (
-                                        <figcaption>{post.images.find(img => img.position === 2).discription}</figcaption>
+                                        <figcaption dangerouslySetInnerHTML={{ __html: post.images.find(img => img.position === 2).discription }} />
                                     )}
                                 </figure>
                             )}
 
                             {/* Content Block 1 */}
-                            {post.content1 && <p className="dropcap">{post.content1}</p>}
+                            {post.content1 && (
+                                <div
+                                    className="dropcap"
+                                    dangerouslySetInnerHTML={{ __html: post.content1 }}
+                                />
+                            )}
 
                             {/* Image 3 & 4 - Gallery Grid */}
                             {(post.images?.find(img => img.position === 3) || post.images?.find(img => img.position === 4)) && (
@@ -186,7 +196,9 @@ const PostDetail = () => {
                             {/* Split Section 1: Text + Vertical Image */}
                             <div className="article_split_section split_align_top">
                                 <div className="split_text">
-                                    {post.content2 && <p>{post.content2}</p>}
+                                    {post.content2 && (
+                                        <div dangerouslySetInnerHTML={{ __html: post.content2 }} />
+                                    )}
                                 </div>
                                 <div className="split_media">
                                     {post.images?.find(img => img.position === 6) && (
@@ -196,7 +208,7 @@ const PostDetail = () => {
                                                 alt="Perspective view"
                                             />
                                             {post.images.find(img => img.position === 6).discription && (
-                                                <figcaption>{post.images.find(img => img.position === 6).discription}</figcaption>
+                                                <figcaption dangerouslySetInnerHTML={{ __html: post.images.find(img => img.position === 6).discription }} />
                                             )}
                                         </figure>
                                     )}
@@ -217,13 +229,15 @@ const PostDetail = () => {
                                                 alt="Detail focus"
                                             />
                                             {post.images.find(img => img.position === 7).discription && (
-                                                <figcaption>{post.images.find(img => img.position === 7).discription}</figcaption>
+                                                <figcaption dangerouslySetInnerHTML={{ __html: post.images.find(img => img.position === 7).discription }} />
                                             )}
                                         </figure>
                                     )}
                                 </div>
                                 <div className="split_text">
-                                    {post.content3 && <p>{post.content3}</p>}
+                                    {post.content3 && (
+                                        <div dangerouslySetInnerHTML={{ __html: post.content3 }} />
+                                    )}
                                 </div>
                             </div>
 
@@ -239,7 +253,7 @@ const PostDetail = () => {
                                 <div className="article_cinematic_image">
                                     <img src={post.images.find(img => img.position === 8).image} alt="Closing Cinematic" />
                                     {post.images.find(img => img.position === 8).discription && (
-                                        <p className="image_caption_simple">{post.images.find(img => img.position === 8).discription}</p>
+                                        <div className="image_caption_simple" dangerouslySetInnerHTML={{ __html: post.images.find(img => img.position === 8).discription }} />
                                     )}
                                 </div>
                             )}
