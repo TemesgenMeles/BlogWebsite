@@ -183,12 +183,49 @@ const PostDetail = () => {
                                 </div>
                             )}
 
-                            {/* Content Block 2 */}
-                            {post.content2 && <p>{post.content2}</p>}
+                            {/* Split Section 1: Text + Vertical Image */}
+                            <div className="article_split_section split_align_top">
+                                <div className="split_text">
+                                    {post.content2 && <p>{post.content2}</p>}
+                                </div>
+                                <div className="split_media">
+                                    {post.images?.find(img => img.position === 6) && (
+                                        <figure className="article_vertical_image_mini">
+                                            <img
+                                                src={post.images.find(img => img.position === 6).image}
+                                                alt="Perspective view"
+                                            />
+                                            {post.images.find(img => img.position === 6).discription && (
+                                                <figcaption>{post.images.find(img => img.position === 6).discription}</figcaption>
+                                            )}
+                                        </figure>
+                                    )}
+                                </div>
+                            </div>
 
                             <blockquote>
                                 "Coding isn't just about syntax; it's about solving problems and creating experiences that resonate with people."
                             </blockquote>
+
+                            {/* Split Section 2: Square Image + Text (Reversed on Desktop) */}
+                            <div className="article_split_section split_reversed split_align_center">
+                                <div className="split_media">
+                                    {post.images?.find(img => img.position === 7) && (
+                                        <figure className="article_square_image_mini">
+                                            <img
+                                                src={post.images.find(img => img.position === 7).image}
+                                                alt="Detail focus"
+                                            />
+                                            {post.images.find(img => img.position === 7).discription && (
+                                                <figcaption>{post.images.find(img => img.position === 7).discription}</figcaption>
+                                            )}
+                                        </figure>
+                                    )}
+                                </div>
+                                <div className="split_text">
+                                    {post.content3 && <p>{post.content3}</p>}
+                                </div>
+                            </div>
 
                             {/* Image 5 - Wide Section Break */}
                             {post.images?.find(img => img.position === 5) && (
@@ -197,8 +234,15 @@ const PostDetail = () => {
                                 </div>
                             )}
 
-                            {/* Content Block 3 */}
-                            {post.content3 && <p>{post.content3}</p>}
+                            {/* Image 8 - Panoramic/Cinematic Closing */}
+                            {post.images?.find(img => img.position === 8) && (
+                                <div className="article_cinematic_image">
+                                    <img src={post.images.find(img => img.position === 8).image} alt="Closing Cinematic" />
+                                    {post.images.find(img => img.position === 8).discription && (
+                                        <p className="image_caption_simple">{post.images.find(img => img.position === 8).discription}</p>
+                                    )}
+                                </div>
+                            )}
 
                             <div className="in_article_tags">
                                 {['Development', 'Growth', 'Coding'].map(tag => (
