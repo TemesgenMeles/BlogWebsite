@@ -15,14 +15,11 @@ const Posts = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const postsPerPage = 6
 
-    // Mock Popular Posts (could be fetched from API later)
-    const popularPosts = [
-        { id: 1, title: "Building an Unstoppable Growth Mindset", date: "Jan 12, 2024" },
-        { id: 2, title: "10 React Best Practices for 2024", date: "Feb 05, 2024" },
-        { id: 3, title: "The Future of AI in Web Development", date: "Mar 10, 2024" }
-    ]
-
-    const categories = ['All', 'Tech', 'Life', 'Education', 'Business', 'Insights']
+    const categories = ['All', ...new Set(posts.flatMap(p => p.catagory?.map(c => c.name) || []))]
+    
+    const popularPosts = posts && posts.length > 0 
+        ? [...posts].sort((a, b) => (b.likes || 0) - (a.likes || 0)).slice(0, 4)
+        : []
 
     const fetchPosts = async () => {
         try {
@@ -43,9 +40,14 @@ const Posts = () => {
 
     const filteredPosts = posts.filter(post => {
         const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                            post.content1.toLowerCase().includes(searchQuery.toLowerCase())
+                            (post.excerpt && post.excerpt.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                            (post.content1 && post.content1.toLowerCase().includes(searchQuery.toLowerCase()))
+        
         const matchesCategory = selectedCategory === 'All' || 
-                               (post.catagory && post.catagory.some(c => c.name === selectedCategory));
+                               (post.catagory && post.catagory.some(c => 
+                                   c.name.toLowerCase() === selectedCategory.toLowerCase() || 
+                                   c.slug.toLowerCase() === selectedCategory.toLowerCase()
+                               ));
         return matchesSearch && matchesCategory
     })
 
@@ -128,7 +130,7 @@ const Posts = () => {
                                             
                                             <div className="card_body">
                                                 <div className="card_meta">
-                                                    <span><Calendar size={14} /> {new Date(post.published_date).toLocaleDateString()}</span>
+                                                    <span><Calendar size={14} /> {new Date(post.published_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
                                                     <span><Clock size={14} /> 5 min read</span>
                                                 </div>
                                                 <h3 className="card_title">
@@ -189,11 +191,18 @@ const Posts = () => {
                         <div className="popular_list">
                             {popularPosts.map(post => (
                                 <Link to={`/posts/${post.id}`} key={post.id} className="popular_item">
+                                    <div className="popular_thumb_container">
+                                        {post.images && post.images.length > 0 ? (
+                                            <img src={post.images[0].image} alt={post.title} />
+                                        ) : (
+                                            <div className="thumb_placeholder"><BookOpen size={16} /></div>
+                                        )}
+                                    </div>
                                     <div className="item_content">
                                         <h4>{post.title}</h4>
-                                        <span>{post.date}</span>
+                                        <span>{new Date(post.published_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
                                     </div>
-                                    <ChevronRight size={16} />
+                                    <ChevronRight size={16} className="arrow_icon" />
                                 </Link>
                             ))}
                         </div>
