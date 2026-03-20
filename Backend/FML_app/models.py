@@ -41,6 +41,7 @@ class Post(models.Model):
     posted_objects = PostObjects()  # Custom manager for published posts
     likes = models.IntegerField(default=0)
     dislikes = models.IntegerField(default=0)
+    views = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title
@@ -67,3 +68,32 @@ class Post_Image(models.Model):
 
     def __str__(self):
         return f"Image for {self.post.title}"
+
+class Comment(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    comment = models.TextField()
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    commented_date = models.DateTimeField(default=timezone.now)
+    displayed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
+    
+class Newsletter(models.Model):
+    email = models.EmailField()
+    subscribed_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.email    
+
+class Message(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    subject = models.CharField(max_length=200)
+    message = models.TextField()
+    message_date = models.DateTimeField(default=timezone.now)
+    new = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name

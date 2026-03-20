@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Mail,
@@ -17,10 +18,30 @@ import {
 } from 'lucide-react';
 
 const Contact = () => {
-  const handleSubmit = (e) => {
+  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
+  const [submitStatus, setSubmitStatus] = useState('');
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Form submission logic would go here
-    alert("Thank you for your message! I'll get back to you soon.");
+    setSubmitStatus('submitting');
+    try {
+        const response = await fetch('http://127.0.0.1:8000/posts/contact-message/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData),
+        });
+        
+        if (response.ok) {
+            setSubmitStatus('success');
+            setFormData({ name: '', email: '', subject: '', message: '' });
+            setTimeout(() => setSubmitStatus(''), 5000);
+        } else {
+            setSubmitStatus('error');
+        }
+    } catch (error) {
+        console.error('Error submitting message:', error);
+        setSubmitStatus('error');
+    }
   };
 
   return (
@@ -107,24 +128,26 @@ const Contact = () => {
             <form onSubmit={handleSubmit} className="premium_contact_form">
               <div className="form_group">
                 <label htmlFor="name">Full Name</label>
-                <input type="text" id="name" placeholder="Example: Temesgen Meles" required />
+                <input type="text" id="name" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="Example: Temesgen Meles" required />
               </div>
               <div className="form_group">
                 <label htmlFor="email">Email Address</label>
-                <input type="email" id="email" placeholder="Example: teme@gmail.com" required />
+                <input type="email" id="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} placeholder="Example: teme@gmail.com" required />
               </div>
               <div className="form_group">
                 <label htmlFor="subject">Subject</label>
-                <input type="text" id="subject" placeholder="Feedback / Inquiry" required />
+                <input type="text" id="subject" value={formData.subject} onChange={e => setFormData({...formData, subject: e.target.value})} placeholder="Feedback / Inquiry" required />
               </div>
               <div className="form_group">
                 <label htmlFor="message">Your Message</label>
-                <textarea id="message" rows="5" placeholder="Write your message here..." required></textarea>
+                <textarea id="message" rows="5" value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} placeholder="Write your message here..." required></textarea>
               </div>
-              <button type="submit" className="btn_primary btn_full">
-                <span>Send Message</span>
+              <button type="submit" disabled={submitStatus === 'submitting'} className="btn_primary btn_full">
+                <span>{submitStatus === 'submitting' ? 'Sending...' : 'Send Message'}</span>
                 <Send size={18} />
               </button>
+              {submitStatus === 'success' && <div style={{ color: 'var(--primary-color)', textAlign: 'center', marginTop: '15px' }}>Thank you for your message! I'll get back to you soon.</div>}
+              {submitStatus === 'error' && <div style={{ color: 'red', textAlign: 'center', marginTop: '15px' }}>Failed to send message. Please try again later.</div>}
             </form>
           </div>
         </div>

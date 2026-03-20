@@ -10,6 +10,8 @@ import About from '../Components/pages/About'
 import Contact from '../Components/pages/Contact'
 import Posts from '../Components/pages/Posts'
 import PostDetail from '../Components/pages/PostDetail'
+import AdminLayout from '../Components/layout/AdminLayout'
+import AdminDashboard from '../Components/pages/AdminDashboard'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -18,13 +20,19 @@ function App() {
 
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="/" element={<RootLayout />}>
-        <Route index element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/posts" element={<Posts />} />
-        <Route path="/posts/:id" element={<PostDetail />} />
-      </Route>
+      <>
+        <Route path="/" element={<RootLayout />}>
+          <Route index element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/posts" element={<Posts />} />
+          <Route path="/posts/:id" element={<PostDetail />} />
+        </Route>
+        {/* Admin Routes */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+        </Route>
+      </>
     )
   )
 

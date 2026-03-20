@@ -926,17 +926,31 @@
 .input_icon {
     position: absolute;
     left: 15px;
-    color: #6b7280;
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .newsletter_form input {
-    padding: 12px 20px 12px 45px;
-    /* Added left padding for the icon */
+    padding: 12px 45px;
+    /* Symmetric padding to keep text perfectly centered while leaving room for icon */
     font-size: 1.1rem;
     border-radius: 5px;
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    background-color: transparent;
+    color: #ffffff;
     width: 100%;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Inter', 'Roboto', sans-serif;
+    text-align: center;
+}
+
+.newsletter_form input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.newsletter_form input:focus {
+    outline: none;
+    border: 1px solid var(--primary-color, #10b981);
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
 /* Enhancing category card visuals */
@@ -1882,7 +1896,7 @@ header.home_page button:hover svg {
     transition: all 0.3s ease;
 }
 
-.search_input_box input:focus + .search_icon {
+.search_input_box input:focus+.search_icon {
     opacity: 1;
     transform: translateY(-50%) scale(1.1);
 }
@@ -2734,5 +2748,197 @@ blockquote {
 @media (max-width: 768px) {
     .article_split_section {
         grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================================================
+   Redesigned Comments Section
+   ========================================================================== */
+
+.comments_container {
+    margin-top: 80px;
+    padding-top: 60px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.comments_header {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.comments_list {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    margin-bottom: 60px;
+}
+
+.comment_item {
+    display: flex;
+    gap: 20px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.comment_avatar {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--primary-color), #2ea043);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 12px rgba(70, 200, 85, 0.2);
+}
+
+.comment_content {
+    flex-grow: 1;
+}
+
+.comment_meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.comment_author {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-color);
+    text-transform: capitalize;
+}
+
+.comment_date {
+    font-size: 0.85rem;
+    color: var(--text-color);
+    opacity: 0.5;
+}
+
+.comment_text {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.7;
+    color: var(--text-color);
+    opacity: 0.9;
+    margin: 0;
+}
+
+/* Comment Form */
+.comment_form_wrapper {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.comment_form_title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 24px;
+}
+
+.comment_form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.comment_input_row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.comment_input,
+.comment_textarea {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 14px 18px;
+    color: var(--text-color);
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.comment_input:focus,
+.comment_textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 4px rgba(70, 200, 85, 0.1);
+}
+
+.comment_textarea {
+    resize: vertical;
+    min-height: 150px;
+}
+
+.comment_submit_btn {
+    align-self: flex-start;
+    padding: 14px 32px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(70, 200, 85, 0.3);
+}
+
+.comment_submit_btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(70, 200, 85, 0.4);
+    filter: brightness(1.1);
+}
+
+.comment_submit_btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.comment_submit_btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Empty State */
+.no_comments {
+    text-align: center;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 15px;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+    opacity: 0.6;
+    font-style: italic;
+}
+
+@media (max-width: 768px) {
+    .comment_input_row {
+        grid-template-columns: 1fr;
+    }
+    
+    .comment_form_wrapper {
+        padding: 25px;
     }
 }

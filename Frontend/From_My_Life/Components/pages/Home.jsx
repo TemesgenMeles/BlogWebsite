@@ -18,6 +18,29 @@ import {
 const Home = () => {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [newsletterEmail, setNewsletterEmail] = useState('');
+    const [newsletterStatus, setNewsletterStatus] = useState('');
+
+    const handleNewsletterSubmit = async (e) => {
+        e.preventDefault();
+        setNewsletterStatus('subscribing');
+        try {
+            const response = await fetch('http://127.0.0.1:8000/posts/newsletter/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: newsletterEmail }),
+            });
+            if (response.ok) {
+                setNewsletterStatus('success');
+                setNewsletterEmail('');
+            } else {
+                setNewsletterStatus('error');
+            }
+        } catch (error) {
+            console.error('Error subscribing:', error);
+            setNewsletterStatus('error');
+        }
+    };
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -134,13 +157,23 @@ const Home = () => {
                 <div className="cta_content">
                     <h2>Stay in the Loop</h2>
                     <p>Subscribe to my newsletter to get the latest posts, exclusive resources, and updates delivered straight to your inbox. No spam, just good content.</p>
-                    <form className="newsletter_form" onSubmit={(e) => e.preventDefault()}>
+                    <form className="newsletter_form" onSubmit={handleNewsletterSubmit}>
                         <div className="input_group">
                             <Mail size={20} className="input_icon" />
-                            <input type="email" placeholder="Enter your email address" required />
+                            <input 
+                                type="email" 
+                                placeholder="Enter your email address" 
+                                value={newsletterEmail}
+                                onChange={(e) => setNewsletterEmail(e.target.value)}
+                                required 
+                            />
                         </div>
-                        <button type="submit" className="btn_primary flex_center gap_sm">Subscribe <ChevronRight size={20} /></button>
+                        <button type="submit" disabled={newsletterStatus === 'subscribing'} className="btn_primary flex_center gap_sm">
+                            {newsletterStatus === 'subscribing' ? 'Subscribing...' : 'Subscribe'} <ChevronRight size={20} />
+                        </button>
                     </form>
+                    {newsletterStatus === 'success' && <p style={{ color: 'var(--primary-color)', marginTop: '10px' }}>Successfully subscribed!</p>}
+                    {newsletterStatus === 'error' && <p style={{ color: 'red', marginTop: '10px' }}>Failed to subscribe. Please try again.</p>}
                 </div>
             </section>
 

@@ -28,6 +28,30 @@ const PostDetail = () => {
     }, [id])
 
     const [liking, setLiking] = useState(false)
+    const [commentData, setCommentData] = useState({ name: '', email: '', comment: '' })
+    const [submittingComment, setSubmittingComment] = useState(false)
+
+    const handleCommentSubmit = async (e) => {
+        e.preventDefault()
+        if (!commentData.name || !commentData.email || !commentData.comment) return
+        setSubmittingComment(true)
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/posts/comments/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...commentData, post: post.id })
+            })
+            if (response.ok) {
+                const newComment = await response.json()
+                setPost(prev => ({ ...prev, comments: [...(prev.comments || []), newComment] }))
+                setCommentData({ name: '', email: '', comment: '' })
+            }
+        } catch (error) {
+            console.error('Error submitting comment:', error)
+        } finally {
+            setSubmittingComment(false)
+        }
+    }
 
     const handleLike = async () => {
         if (liking) return
@@ -265,6 +289,71 @@ const PostDetail = () => {
                             </div>
                         </div>
                     </div>
+
+                    {/* Comments Section */}
+                    <div className="comments_container">
+                        <div className="comments_header">
+                            <Share2 size={24} />
+                            <span>Comments ({post.comments?.length || 0})</span>
+                        </div>
+
+                        <div className="comments_list">
+                            {post.comments?.length > 0 ? post.comments.map(c => (
+                                <div key={c.id} className="comment_item">
+                                    <div className="comment_avatar">
+                                        {c.name ? c.name[0].toUpperCase() : <User size={20} />}
+                                    </div>
+                                    <div className="comment_content">
+                                        <div className="comment_meta">
+                                            <span className="comment_author">{c.name}</span>
+                                            <span className="comment_date">{new Date(c.commented_date).toLocaleDateString()}</span>
+                                        </div>
+                                        <p className="comment_text">{c.comment}</p>
+                                    </div>
+                                </div>
+                            )) : (
+                                <div className="no_comments">
+                                    <p>No comments yet. Be the first to share your thoughts!</p>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="comment_form_wrapper">
+                            <h4 className="comment_form_title">Leave a Comment</h4>
+                            <form onSubmit={handleCommentSubmit} className="comment_form">
+                                <div className="comment_input_row">
+                                    <input
+                                        type="text"
+                                        className="comment_input"
+                                        placeholder="Your Name"
+                                        value={commentData.name}
+                                        onChange={e => setCommentData({ ...commentData, name: e.target.value })}
+                                        required
+                                    />
+                                    <input
+                                        type="email"
+                                        className="comment_input"
+                                        placeholder="Email Address"
+                                        value={commentData.email}
+                                        onChange={e => setCommentData({ ...commentData, email: e.target.value })}
+                                        required
+                                    />
+                                </div>
+                                <textarea
+                                    className="comment_textarea"
+                                    placeholder="Write your comment here..."
+                                    value={commentData.comment}
+                                    onChange={e => setCommentData({ ...commentData, comment: e.target.value })}
+                                    required
+                                    rows={5}
+                                />
+                                <button type="submit" disabled={submittingComment} className="comment_submit_btn">
+                                    {submittingComment ? 'Submitting...' : 'Post Comment'}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
 
                     {/* Simple Bottom Navigation */}
                     <footer className="article_footer">
