@@ -316,6 +316,36 @@
     color: var(--text-main);
 }
 
+/* Status Filter Tabs */
+.status_filter_tabs {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 32px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.status_tab {
+    padding: 12px 8px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9375rem;
+    margin-bottom: -1px;
+}
+
+.status_tab:hover {
+    color: var(--primary-color);
+}
+
+.status_tab.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
 /* Filter Bar & Pills */
 .admin_filter_wrapper {
     display: flex;

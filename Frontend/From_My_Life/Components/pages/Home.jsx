@@ -160,12 +160,12 @@ const Home = () => {
                     <form className="newsletter_form" onSubmit={handleNewsletterSubmit}>
                         <div className="input_group">
                             <Mail size={20} className="input_icon" />
-                            <input 
-                                type="email" 
-                                placeholder="Enter your email address" 
+                            <input
+                                type="email"
+                                placeholder="Enter your email address"
                                 value={newsletterEmail}
                                 onChange={(e) => setNewsletterEmail(e.target.value)}
-                                required 
+                                required
                             />
                         </div>
                         <button type="submit" disabled={newsletterStatus === 'subscribing'} className="btn_primary flex_center gap_sm">

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { 
+import {
     Calendar, BookOpen, Clock, Mail, ChevronRight, ChevronLeft,
     SearchX, TrendingUp, Facebook, Twitter, Linkedin, Github,
     Search, ArrowRight, ArrowLeft
@@ -42,10 +42,10 @@ const Posts = () => {
     const fetchPosts = async (category = 'All') => {
         try {
             setLoading(true);
-            const url = category === 'All' 
-                ? 'http://127.0.0.1:8000/posts/' 
+            const url = category === 'All'
+                ? 'http://127.0.0.1:8000/posts/'
                 : `http://127.0.0.1:8000/posts/?category=${category}`;
-            
+
             const response = await fetch(url);
             const data = await response.json();
             setPosts(data);
@@ -91,9 +91,9 @@ const Posts = () => {
 
     const filteredPosts = posts.filter(post => {
         const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                            (post.excerpt && post.excerpt.toLowerCase().includes(searchQuery.toLowerCase())) ||
-                            (post.content1 && post.content1.toLowerCase().includes(searchQuery.toLowerCase()))
-        
+            (post.excerpt && post.excerpt.toLowerCase().includes(searchQuery.toLowerCase())) ||
+            (post.content1 && post.content1.toLowerCase().includes(searchQuery.toLowerCase()))
+
         // Category filtering is now handled by the server
         return matchesSearch;
     })
@@ -107,6 +107,39 @@ const Posts = () => {
     const paginate = (pageNumber) => {
         setCurrentPage(pageNumber);
         window.scrollTo({ top: 300, behavior: 'smooth' });
+    };
+
+    // Helper to generate pagination with ellipses
+    const getPageNumbers = () => {
+        const pages = new Set();
+        const showMax = 3;
+
+        // Always add first 3 pages
+        for (let i = 1; i <= Math.min(showMax, totalPages); i++) pages.add(i);
+        // Always add last 3 pages
+        for (let i = Math.max(1, totalPages - showMax + 1); i <= totalPages; i++) pages.add(i);
+
+        const sortedPages = Array.from(pages).sort((a, b) => a - b);
+        const result = [];
+
+        for (let i = 0; i < sortedPages.length; i++) {
+            const current = sortedPages[i];
+            const next = sortedPages[i + 1];
+
+            result.push(current);
+
+            if (next && next - current > 1) {
+                // Check if current page falls in the gap
+                if (currentPage > current && currentPage < next) {
+                    if (currentPage - current > 1) result.push('...');
+                    result.push(currentPage);
+                    if (next - currentPage > 1) result.push('...');
+                } else {
+                    result.push('...');
+                }
+            }
+        }
+        return result;
     };
 
     return (
@@ -128,14 +161,14 @@ const Posts = () => {
                 <main className="posts_main_area">
                     {/* Updated Category Filter Bar */}
                     <div className="filter_bar">
-                        <button 
+                        <button
                             className={`filter_chip ${selectedCategory === 'All' ? 'active' : ''}`}
                             onClick={() => setSelectedCategory('All')}
                         >
                             All Stories
                         </button>
                         {categories.map(cat => (
-                            <button 
+                            <button
                                 key={cat.id}
                                 className={`filter_chip ${selectedCategory === cat.slug ? 'active' : ''}`}
                                 onClick={() => setSelectedCategory(cat.slug)}
@@ -156,12 +189,12 @@ const Posts = () => {
                             <div className="blog_posts_grid">
                                 {currentPosts.length > 0 ? (
                                     currentPosts.map((post, idx) => (
-                                        <article key={post.id} className="premium_blog_card" style={{animationDelay: `${idx * 0.1}s`}}>
+                                        <article key={post.id} className="premium_blog_card" style={{ animationDelay: `${idx * 0.1}s` }}>
                                             <div className="card_image_wrapper">
                                                 {Array.isArray(post.images) && post.images.length > 0 ? (
-                                                    <img 
-                                                        src={post.images.find(img => img.position === 1)?.image || post.images[0].image} 
-                                                        alt={post.title} 
+                                                    <img
+                                                        src={post.images.find(img => img.position === 1)?.image || post.images[0].image}
+                                                        alt={post.title}
                                                         loading="lazy"
                                                     />
                                                 ) : (
@@ -175,7 +208,7 @@ const Posts = () => {
                                                     ))}
                                                 </div>
                                             </div>
-                                            
+
                                             <div className="card_body">
                                                 <div className="card_meta">
                                                     <span><Calendar size={14} /> {new Date(post.published_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
@@ -204,7 +237,7 @@ const Posts = () => {
 
                             {totalPages > 1 && (
                                 <div className="professional_pagination">
-                                    <button 
+                                    <button
                                         className="pagination_nav_btn"
                                         onClick={() => paginate(currentPage - 1)}
                                         disabled={currentPage === 1}
@@ -212,20 +245,24 @@ const Posts = () => {
                                         <ChevronLeft size={20} />
                                         <span>Previous</span>
                                     </button>
-                                    
+
                                     <div className="page_numbers_hub">
-                                        {[...Array(totalPages)].map((_, idx) => (
-                                            <button 
-                                                key={idx + 1}
-                                                className={`page_dot ${currentPage === idx + 1 ? 'active' : ''}`}
-                                                onClick={() => paginate(idx + 1)}
-                                            >
-                                                {idx + 1}
-                                            </button>
+                                        {getPageNumbers().map((page, idx) => (
+                                            page === '...' ? (
+                                                <span key={`dots-${idx}`} className="pagination_dots">...</span>
+                                            ) : (
+                                                <button
+                                                    key={page}
+                                                    className={`page_dot ${currentPage === page ? 'active' : ''}`}
+                                                    onClick={() => paginate(page)}
+                                                >
+                                                    {page}
+                                                </button>
+                                            )
                                         ))}
                                     </div>
 
-                                    <button 
+                                    <button
                                         className="pagination_nav_btn"
                                         onClick={() => paginate(currentPage + 1)}
                                         disabled={currentPage === totalPages}
@@ -244,9 +281,9 @@ const Posts = () => {
                         <h3>Search</h3>
                         <div className="search_input_box">
                             <Search size={18} className="search_icon" />
-                            <input 
-                                type="text" 
-                                placeholder="Keywords..." 
+                            <input
+                                type="text"
+                                placeholder="Keywords..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
@@ -281,12 +318,12 @@ const Posts = () => {
                             <h3>Join the Circle</h3>
                             <p>Get the latest reflections and tutorials delivered to your inbox.</p>
                             <form className="sidebar_newsletter_form" onSubmit={handleNewsletterSubmit}>
-                                <input 
-                                    type="email" 
-                                    placeholder="Your email address" 
+                                <input
+                                    type="email"
+                                    placeholder="Your email address"
                                     value={newsletterEmail}
                                     onChange={(e) => setNewsletterEmail(e.target.value)}
-                                    required 
+                                    required
                                 />
                                 <button type="submit" disabled={newsletterStatus === 'subscribing'}>
                                     {newsletterStatus === 'subscribing' ? '...' : 'Subscribe Now'}

@@ -33,6 +33,8 @@ class PostSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['catagory'] = CatagorySerializer(instance.catagory.all(), many=True).data
         representation['author'] = UserSerializer(instance.author).data
+        # Filter comments to only show approved (displayed=True) ones
+        representation['comments'] = CommentSerializer(instance.comments.filter(displayed=True), many=True).data
         return representation
     
     class Meta:

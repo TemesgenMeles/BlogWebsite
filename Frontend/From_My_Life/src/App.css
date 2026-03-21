@@ -77,7 +77,7 @@
 .leatest_post .title {
     font-size: 2.5rem;
     color: var(--primary-color);
-    font-family: 'Archipelago', sans-serif;
+    font-family: 'Archivo Black', sans-serif;
     font-weight: 800;
     position: relative;
     width: max-content;
@@ -589,7 +589,7 @@
 .section_title {
     font-size: 2.5rem;
     color: var(--primary-color);
-    font-family: 'Archipelago', 'Archivo Black', sans-serif;
+    font-family: 'Archivo Black', 'Archivo Black', sans-serif;
     margin-bottom: 20px;
 }
 
@@ -2135,6 +2135,17 @@ header.home_page button:hover svg {
     box-shadow: 0 5px 15px rgba(70, 200, 85, 0.3);
 }
 
+.pagination_dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-color);
+    opacity: 0.5;
+    font-weight: 800;
+    font-size: 1.2rem;
+    padding-bottom: 5px;
+}
+
 @media (max-width: 600px) {
     .professional_pagination {
         flex-direction: column;
@@ -2324,8 +2335,10 @@ header.home_page button:hover svg {
 }
 
 .author_info h4 {
-    font-size: 1rem;
+    font-size: 1.2rem;
     margin-bottom: 4px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
 }
 
 .meta_details {

@@ -9,7 +9,14 @@ class PostList(generics.ListCreateAPIView):
     serializer_class = PostSerializer
 
     def get_queryset(self):
-        queryset = Post.objects.all().order_by('-published_date')
+        status = self.request.query_params.get('status', None)
+        if status == 'all':
+            queryset = Post.objects.all().order_by('-published_date')
+        elif status == 'draft':
+            queryset = Post.objects.filter(status='draft').order_by('-published_date')
+        else:
+            queryset = Post.posted_objects.all().order_by('-published_date')
+
         category_slug = self.request.query_params.get('category', None)
         if category_slug:
             # We filter by the slug of the category. 
@@ -66,6 +73,10 @@ class NewsletterDetail(generics.RetrieveDestroyAPIView):
 
 class MessageList(generics.ListCreateAPIView):
     queryset = Message.objects.all().order_by('-message_date')
+    serializer_class = MessageSerializer
+
+class MessageUpdate(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Message.objects.all()
     serializer_class = MessageSerializer
 
 class MessageUpdate(generics.RetrieveUpdateDestroyAPIView):

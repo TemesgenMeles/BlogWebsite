@@ -8,20 +8,21 @@ const ManagePosts = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('all');
+    const [statusFilter, setStatusFilter] = useState('all');
 
     const fetchData = async () => {
         try {
             setLoading(true);
             const [postsRes, catRes] = await Promise.all([
-                fetch('http://127.0.0.1:8000/posts/'),
+                fetch('http://127.0.0.1:8000/posts/?status=all'),
                 fetch('http://127.0.0.1:8000/posts/categories/')
             ]);
-            
+
             if (postsRes.ok) {
                 const postsData = await postsRes.json();
                 setPosts(postsData);
             }
-            
+
             if (catRes.ok) {
                 const catData = await catRes.json();
                 setCategories(catData);
@@ -53,9 +54,10 @@ const ManagePosts = () => {
 
     const filteredPosts = posts.filter(post => {
         const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesCategory = selectedCategory === 'all' || 
-            post.catagory_details?.some(cat => cat.slug === selectedCategory);
-        return matchesSearch && matchesCategory;
+        const matchesCategory = selectedCategory === 'all' ||
+            post.catagory?.some(cat => cat.slug === selectedCategory);
+        const matchesStatus = statusFilter === 'all' || post.status === statusFilter;
+        return matchesSearch && matchesCategory && matchesStatus;
     });
 
     return (
@@ -70,16 +72,37 @@ const ManagePosts = () => {
                 </Link>
             </header>
 
+            <div className="status_filter_tabs">
+                <button
+                    className={`status_tab ${statusFilter === 'all' ? 'active' : ''}`}
+                    onClick={() => setStatusFilter('all')}
+                >
+                    All Posts ({posts.length})
+                </button>
+                <button
+                    className={`status_tab ${statusFilter === 'publish' ? 'active' : ''}`}
+                    onClick={() => setStatusFilter('publish')}
+                >
+                    Published ({posts.filter(p => p.status === 'publish').length})
+                </button>
+                <button
+                    className={`status_tab ${statusFilter === 'draft' ? 'active' : ''}`}
+                    onClick={() => setStatusFilter('draft')}
+                >
+                    Drafts ({posts.filter(p => p.status === 'draft').length})
+                </button>
+            </div>
+
             <div className="admin_filter_wrapper">
                 <div className="category_filter_bar">
-                    <button 
+                    <button
                         className={`filter_pill ${selectedCategory === 'all' ? 'active' : ''}`}
                         onClick={() => setSelectedCategory('all')}
                     >
                         All Stories
                     </button>
                     {categories.map(cat => (
-                        <button 
+                        <button
                             key={cat.id}
                             className={`filter_pill ${selectedCategory === cat.slug ? 'active' : ''}`}
                             onClick={() => setSelectedCategory(cat.slug)}
@@ -92,9 +115,9 @@ const ManagePosts = () => {
                 <div className="admin_table_controls">
                     <div className="search_bar">
                         <Search size={18} />
-                        <input 
-                            type="text" 
-                            placeholder="Search by title..." 
+                        <input
+                            type="text"
+                            placeholder="Search by title..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
@@ -125,7 +148,7 @@ const ManagePosts = () => {
                                     <td className="post_title_cell"><strong>{post.title}</strong></td>
                                     <td>{post.author_name}</td>
                                     <td>
-                                        {post.catagory_details?.map(cat => (
+                                        {post.catagory?.map(cat => (
                                             <span key={cat.id} className={`table_badge_cat badge_${cat.slug || 'insight'}`}>{cat.name}</span>
                                         ))}
                                     </td>

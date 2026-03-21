@@ -74,15 +74,15 @@ const CreatePost = () => {
         e.preventDefault();
         setSaving(true);
         try {
-            const url = isEdit 
-                ? `http://127.0.0.1:8000/posts/${id}/` 
+            const url = isEdit
+                ? `http://127.0.0.1:8000/posts/${id}/`
                 : 'http://127.0.0.1:8000/posts/';
-            
+
             const method = isEdit ? 'PUT' : 'POST';
-            
+
             // Note: In a real app, author would be from session
-            const body = { 
-                ...postData, 
+            const body = {
+                ...postData,
                 author: postData.author || 1 // Placeholder admin user ID
             };
 
@@ -126,11 +126,11 @@ const CreatePost = () => {
                 <div className="form_main">
                     <div className="form_group">
                         <label>Post Title</label>
-                        <input 
-                            type="text" 
-                            name="title" 
-                            value={postData.title} 
-                            onChange={handleChange} 
+                        <input
+                            type="text"
+                            name="title"
+                            value={postData.title}
+                            onChange={handleChange}
                             placeholder="Enter post title"
                             required
                         />
@@ -138,10 +138,10 @@ const CreatePost = () => {
 
                     <div className="form_group">
                         <label>Main Content (Markdown supported)</label>
-                        <textarea 
-                            name="main_content" 
-                            value={postData.main_content} 
-                            onChange={handleChange} 
+                        <textarea
+                            name="main_content"
+                            value={postData.main_content}
+                            onChange={handleChange}
                             placeholder="Write your main story here..."
                             rows={10}
                             required
@@ -176,12 +176,12 @@ const CreatePost = () => {
                             </select>
                         </div>
                         <div className="form_checkbox">
-                            <input 
-                                type="checkbox" 
-                                id="latest" 
-                                name="latest" 
-                                checked={postData.latest} 
-                                onChange={handleChange} 
+                            <input
+                                type="checkbox"
+                                id="latest"
+                                name="latest"
+                                checked={postData.latest}
+                                onChange={handleChange}
                             />
                             <label htmlFor="latest">Mark as Latest</label>
                         </div>
@@ -192,9 +192,9 @@ const CreatePost = () => {
                         <div className="category_selector">
                             {categories.map(cat => (
                                 <div key={cat.id} className="cat_item">
-                                    <input 
-                                        type="checkbox" 
-                                        id={`cat-${cat.id}`} 
+                                    <input
+                                        type="checkbox"
+                                        id={`cat-${cat.id}`}
                                         checked={postData.catagory.includes(cat.id)}
                                         onChange={() => handleCategoryChange(cat.id)}
                                     />
