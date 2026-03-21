@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { 
-    Calendar, User, ArrowRight, Search, Filter, 
-    BookOpen, Clock, Tag, Facebook, Twitter, 
-    Linkedin, Github, TrendingUp, Mail, ChevronRight,
-    SearchX
+    Calendar, BookOpen, Clock, Mail, ChevronRight, ChevronLeft,
+    SearchX, TrendingUp, Facebook, Twitter, Linkedin, Github,
+    Search, ArrowRight, ArrowLeft
 } from 'lucide-react'
 
 const Posts = () => {
     const [posts, setPosts] = useState([])
+    const [categories, setCategories] = useState([])
+    const [popularPosts, setPopularPosts] = useState([])
     const [loading, setLoading] = useState(true)
     const [searchQuery, setSearchQuery] = useState('')
     const [selectedCategory, setSelectedCategory] = useState('All')
@@ -38,51 +39,78 @@ const Posts = () => {
         }
     };
 
-    const categories = ['All', ...new Set(posts.flatMap(p => p.catagory?.map(c => c.name) || []))]
-    
-    const popularPosts = posts && posts.length > 0 
-        ? [...posts].sort((a, b) => (b.likes || 0) - (a.likes || 0)).slice(0, 4)
-        : []
-
-    const fetchPosts = async () => {
+    const fetchPosts = async (category = 'All') => {
         try {
-            const response = await fetch('http://127.0.0.1:8000/posts/')
-            const data = await response.json()
-            setPosts(data)
-            setLoading(false)
+            setLoading(true);
+            const url = category === 'All' 
+                ? 'http://127.0.0.1:8000/posts/' 
+                : `http://127.0.0.1:8000/posts/?category=${category}`;
+            
+            const response = await fetch(url);
+            const data = await response.json();
+            setPosts(data);
+            setLoading(false);
+            setCurrentPage(1); // Reset pagination on category change
         } catch (error) {
-            console.error('Error fetching posts:', error)
-            setLoading(false)
+            console.error('Error fetching posts:', error);
+            setLoading(false);
+        }
+    }
+
+    const fetchCategories = async () => {
+        try {
+            const res = await fetch('http://127.0.0.1:8000/posts/categories/');
+            const data = await res.json();
+            setCategories(data);
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+        }
+    }
+
+    const fetchAllPostsForSidebar = async () => {
+        try {
+            const res = await fetch('http://127.0.0.1:8000/posts/');
+            const data = await res.json();
+            // Sort by likes to get popular posts from all categories
+            const popular = [...data].sort((a, b) => (b.likes || 0) - (a.likes || 0)).slice(0, 4);
+            setPopularPosts(popular);
+        } catch (error) {
+            console.error('Error fetching all posts for sidebar:', error);
         }
     }
 
     useEffect(() => {
-        fetchPosts()
-        window.scrollTo(0, 0)
+        fetchCategories();
+        fetchAllPostsForSidebar();
+        window.scrollTo(0, 0);
     }, [])
+
+    useEffect(() => {
+        fetchPosts(selectedCategory);
+    }, [selectedCategory])
 
     const filteredPosts = posts.filter(post => {
         const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                             (post.excerpt && post.excerpt.toLowerCase().includes(searchQuery.toLowerCase())) ||
                             (post.content1 && post.content1.toLowerCase().includes(searchQuery.toLowerCase()))
         
-        const matchesCategory = selectedCategory === 'All' || 
-                               (post.catagory && post.catagory.some(c => 
-                                   c.name.toLowerCase() === selectedCategory.toLowerCase() || 
-                                   c.slug.toLowerCase() === selectedCategory.toLowerCase()
-                               ));
-        return matchesSearch && matchesCategory
+        // Category filtering is now handled by the server
+        return matchesSearch;
     })
 
     // Pagination Logic
+    const totalPages = Math.ceil(filteredPosts.length / postsPerPage)
     const indexOfLastPost = currentPage * postsPerPage
     const indexOfFirstPost = indexOfLastPost - postsPerPage
-    const currentPosts = filteredPosts.slice(0, indexOfLastPost) // Using Load More style
-    const hasMore = indexOfLastPost < filteredPosts.length
+    const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost)
+
+    const paginate = (pageNumber) => {
+        setCurrentPage(pageNumber);
+        window.scrollTo({ top: 300, behavior: 'smooth' });
+    };
 
     return (
         <div className="posts_page_wrapper">
-            {/* Professional Hero/Header */}
             <header className="blog_archive_header">
                 <div className="container">
                     <div className="header_content">
@@ -97,9 +125,8 @@ const Posts = () => {
             </header>
 
             <div className="container main_content_grid">
-                {/* Main Post Section */}
                 <main className="posts_main_area">
-                    {/* Category Filter Bar */}
+                    {/* Updated Category Filter Bar */}
                     <div className="filter_bar">
                         <button 
                             className={`filter_chip ${selectedCategory === 'All' ? 'active' : ''}`}
@@ -107,13 +134,13 @@ const Posts = () => {
                         >
                             All Stories
                         </button>
-                        {categories.slice(1).map(cat => (
+                        {categories.map(cat => (
                             <button 
-                                key={cat}
-                                className={`filter_chip ${selectedCategory === cat ? 'active' : ''}`}
-                                onClick={() => setSelectedCategory(cat)}
+                                key={cat.id}
+                                className={`filter_chip ${selectedCategory === cat.slug ? 'active' : ''}`}
+                                onClick={() => setSelectedCategory(cat.slug)}
                             >
-                                {cat}
+                                {cat.name}
                             </button>
                         ))}
                     </div>
@@ -133,14 +160,12 @@ const Posts = () => {
                                             <div className="card_image_wrapper">
                                                 {Array.isArray(post.images) && post.images.length > 0 ? (
                                                     <img 
-                                                        src={post.images.find(img => img.position === 2)?.image || post.images[0].image} 
+                                                        src={post.images.find(img => img.position === 1)?.image || post.images[0].image} 
                                                         alt={post.title} 
                                                         loading="lazy"
                                                     />
                                                 ) : (
-                                                    <div className="placeholder_thumb">
-                                                        <BookOpen size={40} />
-                                                    </div>
+                                                    <img src="/home_bg.png" alt="Default Background" loading="lazy" />
                                                 )}
                                                 <div className="card_badge_list">
                                                     {post.catagory?.map(cat => (
@@ -177,14 +202,36 @@ const Posts = () => {
                                 )}
                             </div>
 
-                            {/* Pagination - Load More */}
-                            {hasMore && (
-                                <div className="pagination_area">
+                            {totalPages > 1 && (
+                                <div className="professional_pagination">
                                     <button 
-                                        className="load_more_btn"
-                                        onClick={() => setCurrentPage(prev => prev + 1)}
+                                        className="pagination_nav_btn"
+                                        onClick={() => paginate(currentPage - 1)}
+                                        disabled={currentPage === 1}
                                     >
-                                        Load More Articles
+                                        <ChevronLeft size={20} />
+                                        <span>Previous</span>
+                                    </button>
+                                    
+                                    <div className="page_numbers_hub">
+                                        {[...Array(totalPages)].map((_, idx) => (
+                                            <button 
+                                                key={idx + 1}
+                                                className={`page_dot ${currentPage === idx + 1 ? 'active' : ''}`}
+                                                onClick={() => paginate(idx + 1)}
+                                            >
+                                                {idx + 1}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    <button 
+                                        className="pagination_nav_btn"
+                                        onClick={() => paginate(currentPage + 1)}
+                                        disabled={currentPage === totalPages}
+                                    >
+                                        <span>Next</span>
+                                        <ChevronRight size={20} />
                                     </button>
                                 </div>
                             )}
@@ -192,9 +239,7 @@ const Posts = () => {
                     )}
                 </main>
 
-                {/* Sidebar */}
                 <aside className="blog_sidebar">
-                    {/* Search Widget */}
                     <div className="sidebar_widget search_widget">
                         <h3>Search</h3>
                         <div className="search_input_box">
@@ -208,7 +253,6 @@ const Posts = () => {
                         </div>
                     </div>
 
-                    {/* Popular Posts Widget */}
                     <div className="sidebar_widget popular_widget">
                         <h3>Popular Stories <TrendingUp size={18} className="title_icon" /></h3>
                         <div className="popular_list">
@@ -218,7 +262,7 @@ const Posts = () => {
                                         {post.images && post.images.length > 0 ? (
                                             <img src={post.images[0].image} alt={post.title} />
                                         ) : (
-                                            <div className="thumb_placeholder"><BookOpen size={16} /></div>
+                                            <img src="/home_bg.png" alt="Default Background" />
                                         )}
                                     </div>
                                     <div className="item_content">
@@ -231,7 +275,6 @@ const Posts = () => {
                         </div>
                     </div>
 
-                    {/* Newsletter Widget */}
                     <div className="sidebar_widget newsletter_widget">
                         <div className="newsletter_card">
                             <div className="icon_circle"><Mail size={24} /></div>
@@ -254,7 +297,6 @@ const Posts = () => {
                         </div>
                     </div>
 
-                    {/* Socials Widget */}
                     <div className="sidebar_widget socials_widget">
                         <h3>Let's Connect</h3>
                         <div className="sidebar_social_links">
@@ -267,7 +309,6 @@ const Posts = () => {
                 </aside>
             </div>
 
-            {/* Premium Archive Footer */}
             <footer className="blog_archive_footer">
                 <div className="container">
                     <div className="footer_grid">

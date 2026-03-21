@@ -61,16 +61,30 @@ const AdminLayout = () => {
                                 <FileText size={20} /> Manage Posts
                             </NavLink>
                         </li>
-                        {/* Placeholders for future pages */}
                         <li>
-                            <a href="#users" className="admin_disabled">
-                                <Users size={20} /> Users
-                            </a>
+                            <NavLink to="/admin/categories" className={({ isActive }) => isActive ? 'admin_active' : ''}>
+                                <LayoutDashboard size={20} /> Categories
+                            </NavLink>
                         </li>
                         <li>
-                            <a href="#settings" className="admin_disabled">
+                            <NavLink to="/admin/comments" className={({ isActive }) => isActive ? 'admin_active' : ''}>
+                                <Bell size={20} /> Comments
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink to="/admin/messages" className={({ isActive }) => isActive ? 'admin_active' : ''}>
+                                <Bell size={20} /> Messages
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink to="/admin/subscribers" className={({ isActive }) => isActive ? 'admin_active' : ''}>
+                                <Users size={20} /> Subscribers
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink to="/admin/settings" className={({ isActive }) => isActive ? 'admin_active' : ''}>
                                 <Settings size={20} /> Settings
-                            </a>
+                            </NavLink>
                         </li>
                     </ul>
                 </nav>

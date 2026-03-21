@@ -1,13 +1,21 @@
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.response import Response
-from .serializers import PostSerializer, PostImageSerializer, CommentSerializer, NewsletterSerializer, MessageSerializer
+from .serializers import PostSerializer, PostImageSerializer, CommentSerializer, NewsletterSerializer, MessageSerializer, CatagorySerializer
 from FML_app.models import Post, Catagory, Comment, Newsletter, Message
 
 # Create your views here.
 class PostList(generics.ListCreateAPIView):
-    queryset = Post.objects.all()
     serializer_class = PostSerializer
+
+    def get_queryset(self):
+        queryset = Post.objects.all().order_by('-published_date')
+        category_slug = self.request.query_params.get('category', None)
+        if category_slug:
+            # We filter by the slug of the category. 
+            # Note the double underscore for the ManyToMany relationship.
+            queryset = queryset.filter(catagory__slug=category_slug)
+        return queryset
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
@@ -31,18 +39,35 @@ class PostLike(generics.UpdateAPIView):
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
-class CommentCreate(generics.CreateAPIView):
+# Management Views
+class CatagoryList(generics.ListCreateAPIView):
+    queryset = Catagory.objects.all()
+    serializer_class = CatagorySerializer
+
+class CatagoryDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Catagory.objects.all()
+    serializer_class = CatagorySerializer
+
+class CommentList(generics.ListCreateAPIView):
+    queryset = Comment.objects.all().order_by('-commented_date')
+    serializer_class = CommentSerializer
+
+class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
-class NewsletterCreate(generics.ListCreateAPIView):
+class NewsletterList(generics.ListCreateAPIView):
+    queryset = Newsletter.objects.all().order_by('-subscribed_date')
+    serializer_class = NewsletterSerializer
+
+class NewsletterDetail(generics.RetrieveDestroyAPIView):
     queryset = Newsletter.objects.all()
     serializer_class = NewsletterSerializer
 
-class MessageCreate(generics.ListCreateAPIView):
-    queryset = Message.objects.all()
+class MessageList(generics.ListCreateAPIView):
+    queryset = Message.objects.all().order_by('-message_date')
     serializer_class = MessageSerializer
 
-class MessageUpdate(generics.UpdateAPIView):
+class MessageUpdate(generics.RetrieveUpdateDestroyAPIView):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer

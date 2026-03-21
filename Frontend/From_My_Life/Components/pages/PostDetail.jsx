@@ -144,9 +144,7 @@ const PostDetail = () => {
                             alt={post.title}
                         />
                     ) : (
-                        <div className="image_fallback_hero">
-                            <BookOpen size={80} />
-                        </div>
+                        <img src="/home_bg.png" alt="Default Background" />
                     )}
                 </div>
             </div>

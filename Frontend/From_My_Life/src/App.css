@@ -1609,23 +1609,32 @@ header.home_page button:hover svg {
 
 .filter_chip {
     padding: 10px 24px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 100px;
-    color: var(--text-color);
+    color: #fff;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-weight: 500;
+    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: 0.5px;
+    font-size: 0.9rem;
 }
 
-.filter_chip:hover,
+.filter_chip:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
 .filter_chip.active {
     background: var(--primary-color);
     color: var(--background-color);
     border-color: var(--primary-color);
     transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(70, 200, 85, 0.2);
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
 }
+
 
 /* Side Bar Popular items styling */
 .popular_list {
@@ -2056,26 +2065,86 @@ header.home_page button:hover svg {
     transform: translateY(-5px);
 }
 
-/* Pagination */
-.pagination_area {
-    margin-top: 60px;
-    text-align: center;
+/* Professional Pagination Controls */
+.professional_pagination {
+    margin-top: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
 }
 
-.load_more_btn {
-    padding: 16px 40px;
-    background: transparent;
-    border: 2px solid var(--primary-color);
-    color: var(--primary-color);
-    border-radius: 100px;
-    font-weight: 700;
+.pagination_nav_btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #fff;
+    border-radius: 16px;
+    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.load_more_btn:hover {
+.pagination_nav_btn:hover:not(:disabled) {
     background: var(--primary-color);
     color: var(--background-color);
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(70, 200, 85, 0.2);
+}
+
+.pagination_nav_btn:disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
+}
+
+.page_numbers_hub {
+    display: flex;
+    gap: 10px;
+}
+
+.page_dot {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #fff;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Outfit', sans-serif;
+}
+
+.page_dot:hover:not(.active) {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.page_dot.active {
+    background: var(--primary-color);
+    color: var(--background-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 5px 15px rgba(70, 200, 85, 0.3);
+}
+
+@media (max-width: 600px) {
+    .professional_pagination {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .pagination_nav_btn {
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 /* Blog Archive Footer */

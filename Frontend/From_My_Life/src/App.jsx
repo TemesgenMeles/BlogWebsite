@@ -12,6 +12,12 @@ import Posts from '../Components/pages/Posts'
 import PostDetail from '../Components/pages/PostDetail'
 import AdminLayout from '../Components/layout/AdminLayout'
 import AdminDashboard from '../Components/pages/AdminDashboard'
+import ManagePosts from '../Components/pages/ManagePosts'
+import CreatePost from '../Components/pages/CreatePost'
+import ManageCategories from '../Components/pages/ManageCategories'
+import ManageComments from '../Components/pages/ManageComments'
+import ManageMessages from '../Components/pages/ManageMessages'
+import ManageSubscribers from '../Components/pages/ManageSubscribers'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -31,6 +37,13 @@ function App() {
         {/* Admin Routes */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
+          <Route path="posts" element={<ManagePosts />} />
+          <Route path="posts/create" element={<CreatePost />} />
+          <Route path="posts/edit/:id" element={<CreatePost />} />
+          <Route path="categories" element={<ManageCategories />} />
+          <Route path="comments" element={<ManageComments />} />
+          <Route path="messages" element={<ManageMessages />} />
+          <Route path="subscribers" element={<ManageSubscribers />} />
         </Route>
       </>
     )

@@ -1,7 +1,6 @@
 from rest_framework import serializers
-from FML_app.models import Post, Post_Image, Comment, Newsletter, Message
+from FML_app.models import Post, Post_Image, Comment, Newsletter, Message, Catagory
 from django.contrib.auth.models import User
-from FML_app.models import Catagory
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,7 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
 class CatagorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Catagory
-        fields = ['name', 'slug']
+        fields = ['id', 'name', 'slug', 'discription']
 
 class PostImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,19 +18,25 @@ class PostImageSerializer(serializers.ModelSerializer):
         fields = ['id', 'post', 'position', 'image', 'discription']
 
 class CommentSerializer(serializers.ModelSerializer):
+    post_title = serializers.ReadOnlyField(source='post.title')
     class Meta:
         model = Comment
-        fields = ['id', 'name', 'email', 'comment', 'post', 'commented_date']
+        fields = ['id', 'name', 'email', 'comment', 'post', 'post_title', 'commented_date', 'displayed']
         
 class PostSerializer(serializers.ModelSerializer):
     images = PostImageSerializer(many=True, read_only=True)
-    author = UserSerializer()
-    catagory = CatagorySerializer(many=True, read_only=True)
+    author_name = serializers.ReadOnlyField(source='author.username')
+    catagory = serializers.PrimaryKeyRelatedField(many=True, queryset=Catagory.objects.all())
     comments = CommentSerializer(many=True, read_only=True)
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['catagory'] = CatagorySerializer(instance.catagory.all(), many=True).data
+        return representation
     
     class Meta:
         model = Post
-        fields = ['id', 'title', 'slug', 'main_content', 'excerpt', 'content1', 'content2', 'content3', 'author', 'catagory', 'published_date', 'status','latest', 'likes', 'dislikes', 'views', 'images', 'comments']
+        fields = ['id', 'title', 'slug', 'main_content', 'excerpt', 'content1', 'content2', 'content3', 'author', 'author_name', 'catagory', 'published_date', 'status','latest', 'likes', 'dislikes', 'views', 'images', 'comments']
 
 
 class NewsletterSerializer(serializers.ModelSerializer):
@@ -42,4 +47,4 @@ class NewsletterSerializer(serializers.ModelSerializer):
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
-        fields = ['id', 'name', 'email', 'subject', 'message', 'message_date']
+        fields = ['id', 'name', 'email', 'subject', 'message', 'message_date', 'new']
