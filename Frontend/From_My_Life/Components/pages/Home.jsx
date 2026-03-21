@@ -97,8 +97,8 @@ const Home = () => {
                                 </div>
                                 <h1 className="post_title">{post.title}</h1>
                                 <div className="post_meta flex_center gap_sm">
-                                    <span className="author_name flex_center gap_xs"><User size={14} /> {post.author.first_name}</span>
-                                    <span className="admin_badge flex_center gap_xs"><ShieldCheck size={14} /> {post.author.is_staff ? 'Admin' : 'User'}</span>
+                                    <span className="author_name flex_center gap_xs"><User size={14} /> {post.author?.first_name} {post.author?.last_name}</span>
+                                    <span className="admin_badge flex_center gap_xs"><ShieldCheck size={14} /> {post.author?.is_staff ? 'Admin' : 'Author'}</span>
                                 </div>
                                 <p className="post_excerpt">{post.excerpt || post.content1.substring(0, 150) + '...'}</p>
                                 <Link className="read-more flex_center gap_sm" to={`/posts/${post.id}`}>Read More <ArrowRight size={16} /></Link>

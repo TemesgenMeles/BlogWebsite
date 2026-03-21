@@ -32,12 +32,12 @@
 .home_page .logo_container h1 {
     font-size: 4rem;
     margin: 0;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Outfit', sans-serif;
 }
 
 .home_page .logo_container p {
     font-size: 1.1rem;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Outfit', sans-serif;
 }
 
 .home_page .logo_container .part_logo {
@@ -96,7 +96,7 @@
 .leatest_post .phrase {
     font-size: 1.2rem;
     color: var(--primary-color);
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Outfit', sans-serif;
     font-weight: lighter;
     margin-top: 5px;
 }
@@ -235,7 +235,7 @@
     line-height: 1.7;
     margin-bottom: 40px;
     opacity: 0.9;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Outfit', sans-serif;
 }
 
 .contact_details {
@@ -382,7 +382,7 @@
     border: 2px solid transparent;
     border-radius: 15px;
     color: var(--text-color);
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Outfit', sans-serif;
     font-size: 1rem;
     transition: all 0.3s ease;
 }
@@ -478,7 +478,7 @@
 .post_card .post_title {
     font-size: 1.5rem;
     color: var(--primary-color);
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Outfit', sans-serif;
     font-weight: 700;
     margin-top: 15px;
 }
@@ -488,7 +488,7 @@
     color: var(--text-color);
     margin-top: 8px;
     opacity: 0.8;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Outfit', sans-serif;
 }
 
 .author_name {
@@ -507,7 +507,7 @@
 .post_card .post_excerpt {
     font-size: 1rem;
     color: var(--text-color);
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Outfit', sans-serif;
     margin-top: 15px;
     margin-bottom: 20px;
     line-height: 1.5;
@@ -598,7 +598,7 @@
     color: var(--text-color);
     line-height: 1.6;
     margin-bottom: 30px;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Outfit', sans-serif;
 }
 
 /* Categories Section */
@@ -752,7 +752,7 @@
     font-size: 1.05rem;
     line-height: 1.6;
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Outfit', sans-serif;
 }
 
 /* CTA Section */
@@ -778,7 +778,7 @@
     font-size: 1.2rem;
     color: #fff;
     margin-bottom: 30px;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Outfit', sans-serif;
 }
 
 .newsletter_form {
@@ -794,7 +794,7 @@
     border: none;
     width: 60%;
     max-width: 300px;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Outfit', sans-serif;
 }
 
 .newsletter_form button {
@@ -806,7 +806,7 @@
     background-color: var(--secondary-color);
     padding: 60px 20px 20px;
     color: var(--text-color);
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Outfit', sans-serif;
     border-top: 2px solid var(--primary-color);
 }
 
@@ -938,7 +938,7 @@
     background-color: transparent;
     color: #ffffff;
     width: 100%;
-    font-family: 'Inter', 'Roboto', sans-serif;
+    font-family: 'Inter', 'Outfit', sans-serif;
     text-align: center;
 }
 
@@ -1158,7 +1158,7 @@ header.home_page button:hover svg {
 .about_hero_content .hero_tagline {
     font-size: 1.4rem;
     font-style: italic;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Outfit', sans-serif;
     margin-top: 15px;
     opacity: 0.9;
 }
@@ -1255,7 +1255,7 @@ header.home_page button:hover svg {
     font-size: 1.2rem;
     line-height: 1.6;
     color: var(--text-color);
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Outfit', sans-serif;
 }
 
 /* Story Section */
@@ -1288,7 +1288,7 @@ header.home_page button:hover svg {
     line-height: 1.8;
     margin-bottom: 20px;
     color: var(--text-color);
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Outfit', sans-serif;
 }
 
 /* Discover Section */
@@ -1337,7 +1337,7 @@ header.home_page button:hover svg {
     line-height: 1.5;
     color: var(--text-color);
     opacity: 0.9;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Outfit', sans-serif;
 }
 
 /* Beyond Section */
@@ -1352,7 +1352,7 @@ header.home_page button:hover svg {
     line-height: 1.7;
     margin-bottom: 40px;
     color: var(--text-color);
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Outfit', sans-serif;
 }
 
 .values_list {
@@ -1531,7 +1531,7 @@ header.home_page button:hover svg {
 .goal_card p {
     color: var(--text-color);
     line-height: 1.6;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Outfit', sans-serif;
 }
 
 @media (max-width: 600px) {
@@ -2006,7 +2006,7 @@ header.home_page button:hover svg {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: #fff;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Outfit', sans-serif;
     transition: all 0.3s ease;
 }
 
@@ -2900,7 +2900,7 @@ blockquote {
 }
 
 .comment_text {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Outfit', sans-serif;
     line-height: 1.7;
     color: var(--text-color);
     opacity: 0.9;
@@ -2943,7 +2943,7 @@ blockquote {
     border-radius: 10px;
     padding: 14px 18px;
     color: var(--text-color);
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Outfit', sans-serif;
     font-size: 0.95rem;
     transition: all 0.3s ease;
 }

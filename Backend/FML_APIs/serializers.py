@@ -32,6 +32,7 @@ class PostSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['catagory'] = CatagorySerializer(instance.catagory.all(), many=True).data
+        representation['author'] = UserSerializer(instance.author).data
         return representation
     
     class Meta:
