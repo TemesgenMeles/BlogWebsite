@@ -147,7 +147,7 @@ const ManageMessages = () => {
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: '20px' }}>
                                 <Clock size={14} /> Sent on {new Date(selectedMessage.message_date).toLocaleString()}
                             </div>
-                            <div style={{ background: '#f8fafc', padding: '24px', borderRadius: '12px', border: '1px solid #e2e8f0', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
+                            <div style={{ background: 'transparent', padding: '24px', borderRadius: '12px', border: '1px solid #e2e8f0', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
                                 {selectedMessage.message}
                             </div>
                         </div>

@@ -1,53 +1,89 @@
 import { Outlet, NavLink } from 'react-router-dom';
 import '../../src/Admin.css';
-import { LayoutDashboard, Users, FileText, Settings, LogOut, Sun, Moon, Bell } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { LayoutDashboard, Users, FileText, Settings, LogOut, Sun, Moon, Bell, ChevronRight } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
 
 const AdminLayout = () => {
-    const [isDarkMode, setIsDarkMode] = useState(false);
-    const [unreadMessages, setUnreadMessages] = useState([]);
+    const [notifications, setNotifications] = useState([]);
+    const [showNotifications, setShowNotifications] = useState(false);
+    const notificationRef = useRef(null);
 
-    const toggleTheme = () => {
-        setIsDarkMode(!isDarkMode);
+    const fetchNotifications = async () => {
+        try {
+            const [msgRes, commentRes] = await Promise.all([
+                fetch('http://127.0.0.1:8000/posts/contact-message/'),
+                fetch('http://127.0.0.1:8000/posts/comments/')
+            ]);
+
+            const msgs = msgRes.ok ? await msgRes.json() : [];
+            const comments = commentRes.ok ? await commentRes.json() : [];
+
+            const newNotifs = [
+                ...msgs.filter(m => m.new).map(m => ({
+                    id: m.id,
+                    type: 'message',
+                    sender: m.name,
+                    content: m.subject,
+                    date: m.message_date,
+                    path: '/admin/messages'
+                })),
+                ...comments.filter(c => c.new).map(c => ({
+                    id: c.id,
+                    type: 'comment',
+                    sender: c.name,
+                    content: c.comment,
+                    date: c.commented_date,
+                    path: '/admin/comments'
+                }))
+            ].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            setNotifications(newNotifs);
+        } catch (error) {
+            console.error("Error fetching notifications:", error);
+        }
     };
 
     useEffect(() => {
-        const fetchMessages = async () => {
-            try {
-                const response = await fetch('http://127.0.0.1:8000/posts/contact-message/');
-                const data = await response.json();
-                const newMsgs = data.filter(msg => msg.new === true);
-                setUnreadMessages(newMsgs);
-            } catch (error) {
-                console.error("Error fetching messages:", error);
+        fetchNotifications();
+        // Refresh every 30 seconds
+        const interval = setInterval(fetchNotifications, 30000);
+
+        // Click outside to close notifications
+        const handleClickOutside = (event) => {
+            if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+                setShowNotifications(false);
             }
         };
-        fetchMessages();
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            clearInterval(interval);
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
     }, []);
 
-    const handleMarkAsRead = async () => {
-        if (unreadMessages.length === 0) return;
+    const markAsRead = async (id, type) => {
+        const endpoint = type === 'message' ? `contact-message/${id}` : `comments/${id}`;
         try {
-            const messagesToUpdate = [...unreadMessages];
-            setUnreadMessages([]);
-            await Promise.all(messagesToUpdate.map(msg => 
-                fetch(`http://127.0.0.1:8000/posts/contact-message/${msg.id}/`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ new: false })
-                })
-            ));
+            const response = await fetch(`http://127.0.0.1:8000/posts/${endpoint}/`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ new: false })
+            });
+
+            if (response.ok) {
+                setNotifications(prev => prev.filter(n => !(n.id === id && n.type === type)));
+            }
         } catch (error) {
-            console.error("Error updating messages:", error);
+            console.error("Error marking as read:", error);
         }
     };
 
     return (
-        <div className={`admin_container ${isDarkMode ? 'dark_mode' : ''}`}>
+        <div className="admin_container">
             <aside className="admin_sidebar">
                 <div className="admin_logo">
-                    <img src="/logo_green.png" alt="Admin Logo" />
-                    <h2>Admin Panel</h2>
+                    <img src="/logo_green.png" alt="Admin Logo" style={{ height: '60px', width: 'auto' }} />
                 </div>
                 <nav className="admin_nav">
                     <ul className="admin_nav_list">
@@ -96,21 +132,57 @@ const AdminLayout = () => {
             </aside>
             <main className="admin_main_content">
                 <header className="admin_topbar">
-                    <button className="theme_toggle_btn" onClick={toggleTheme} aria-label="Toggle Dark Mode">
-                        {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
-                    </button>
+                    <NavLink to="/admin" className="topbar_logo_link">
+                        <img src="/logo.png" alt="Dashboard Home" style={{ height: '45px', width: 'auto' }} />
+                    </NavLink>
                     <div style={{ flex: 1 }}></div>
-                    <div 
-                        className="admin_notifications" 
-                        onClick={handleMarkAsRead} 
-                        style={{ position: 'relative', cursor: 'pointer', marginRight: '20px', display: 'flex', alignItems: 'center' }}
-                        title="Mark messages as read"
+                    <div
+                        className="admin_notifications"
+                        ref={notificationRef}
+                        onClick={() => setShowNotifications(!showNotifications)}
                     >
                         <Bell size={20} />
-                        {unreadMessages.length > 0 && (
-                            <span style={{ position: 'absolute', top: '-8px', right: '-8px', backgroundColor: '#e74c3c', color: 'white', borderRadius: '50%', padding: '2px 6px', fontSize: '10px', fontWeight: 'bold' }}>
-                                {unreadMessages.length}
+                        {notifications.length > 0 && (
+                            <span className="notification_badge">
+                                {notifications.length}
                             </span>
+                        )}
+
+                        {showNotifications && (
+                            <div className="notification_dropdown" onClick={(e) => e.stopPropagation()}>
+                                <div className="notification_header">
+                                    <h4>Notifications</h4>
+                                    <span style={{ fontSize: '0.75rem', opacity: 0.6 }}>{notifications.length} New</span>
+                                </div>
+                                <div className="notification_list">
+                                    {notifications.length > 0 ? (
+                                        notifications.map((notif, idx) => (
+                                            <div key={`${notif.type}-${notif.id}`} className="notification_item">
+                                                <span className="notif_sender">{notif.sender}</span>
+                                                <p className="notif_content">{notif.content}</p>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+                                                    <span className="notif_type_label">{notif.type === 'message' ? 'Message' : 'Comment'}</span>
+                                                    <span style={{ fontSize: '0.65rem', opacity: 0.4 }}>• {new Date(notif.date).toLocaleDateString()}</span>
+                                                </div>
+                                                <NavLink
+                                                    to={notif.path}
+                                                    className="notif_action_btn"
+                                                    onClick={() => {
+                                                        markAsRead(notif.id, notif.type);
+                                                        setShowNotifications(false);
+                                                    }}
+                                                >
+                                                    <ChevronRight size={16} />
+                                                </NavLink>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="notif_empty">
+                                            <p>All caught up!</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                         )}
                     </div>
                     <div className="admin_topbar_user">

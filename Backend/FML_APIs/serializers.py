@@ -21,7 +21,7 @@ class CommentSerializer(serializers.ModelSerializer):
     post_title = serializers.ReadOnlyField(source='post.title')
     class Meta:
         model = Comment
-        fields = ['id', 'name', 'email', 'comment', 'post', 'post_title', 'commented_date', 'displayed']
+        fields = ['id', 'name', 'email', 'comment', 'post', 'post_title', 'commented_date', 'displayed', 'new']
         
 class PostSerializer(serializers.ModelSerializer):
     images = PostImageSerializer(many=True, read_only=True)
