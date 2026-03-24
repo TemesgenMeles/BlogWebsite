@@ -8,13 +8,13 @@ import { Link } from 'react-router-dom';
 
 /* ─── Multi-Series Line Chart ─────────────────────────────────── */
 const SERIES = [
-    { key: 'posts',    label: 'Posts',    color: '#34d399' },
-    { key: 'likes',    label: 'Likes',    color: '#f472b6' },
+    { key: 'posts', label: 'Posts', color: '#34d399' },
+    { key: 'likes', label: 'Likes', color: '#f472b6' },
     { key: 'comments', label: 'Comments', color: '#fbbf24' },
     { key: 'messages', label: 'Messages', color: '#a78bfa' },
 ];
 
-const BlogActivityChart = ({ posts, messages }) => {
+const BlogActivityChart = ({ posts, messages, allComments }) => {
     const [tooltip, setTooltip] = useState(null); // { x, y, monthLabel, data }
     const [animated, setAnimated] = useState(false);
     const svgRef = useRef(null);
@@ -31,7 +31,7 @@ const BlogActivityChart = ({ posts, messages }) => {
         const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
         monthBuckets.push({
             label: d.toLocaleString('default', { month: 'short' }),
-            year:  d.getFullYear(),
+            year: d.getFullYear(),
             month: d.getMonth(),
             posts: 0, views: 0, likes: 0, comments: 0, messages: 0,
         });
@@ -41,10 +41,15 @@ const BlogActivityChart = ({ posts, messages }) => {
         const d = new Date(p.published_date);
         const b = monthBuckets.find(b => b.year === d.getFullYear() && b.month === d.getMonth());
         if (!b) return;
-        b.posts    += 1;
-        b.views    += p.views    || 0;
-        b.likes    += p.likes    || 0;
-        b.comments += p.comments ? p.comments.length : 0;
+        b.posts += 1;
+        b.views += p.views || 0;
+        b.likes += p.likes || 0;
+    });
+
+    allComments.forEach(c => {
+        const d = new Date(c.commented_date);
+        const b = monthBuckets.find(b => b.year === d.getFullYear() && b.month === d.getMonth());
+        if (b) b.comments += 1;
     });
 
     messages.forEach(m => {
@@ -57,11 +62,11 @@ const BlogActivityChart = ({ posts, messages }) => {
     const W = 900, H = 220;
     const PAD = { top: 20, right: 20, bottom: 30, left: 44 };
     const innerW = W - PAD.left - PAD.right;
-    const innerH = H - PAD.top  - PAD.bottom;
+    const innerH = H - PAD.top - PAD.bottom;
     const n = monthBuckets.length;
 
     const allVals = SERIES.flatMap(s => monthBuckets.map(b => b[s.key]));
-    const maxVal  = Math.max(...allVals, 1);
+    const maxVal = Math.max(...allVals, 1);
 
     const xPos = idx => PAD.left + (idx / (n - 1)) * innerW;
     const yPos = val => PAD.top + innerH - (val / maxVal) * innerH;
@@ -72,12 +77,12 @@ const BlogActivityChart = ({ posts, messages }) => {
     const makeArea = key => {
         const pts = monthBuckets.map((b, i) => `${xPos(i).toFixed(1)},${yPos(b[key]).toFixed(1)}`).join(' L');
         const base = yPos(0).toFixed(1);
-        return `M${xPos(0).toFixed(1)},${base} L${pts} L${xPos(n-1).toFixed(1)},${base} Z`;
+        return `M${xPos(0).toFixed(1)},${base} L${pts} L${xPos(n - 1).toFixed(1)},${base} Z`;
     };
 
     const gridYs = [0, 0.25, 0.5, 0.75, 1].map(f => ({
         val: Math.round(maxVal * f),
-        y:   yPos(maxVal * f),
+        y: yPos(maxVal * f),
     }));
 
     const handleMouseMove = e => {
@@ -113,7 +118,7 @@ const BlogActivityChart = ({ posts, messages }) => {
                     <defs>
                         {SERIES.map(s => (
                             <linearGradient key={s.key} id={`grad_${s.key}`} x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%"   stopColor={s.color} stopOpacity="0.18" />
+                                <stop offset="0%" stopColor={s.color} stopOpacity="0.18" />
                                 <stop offset="100%" stopColor={s.color} stopOpacity="0" />
                             </linearGradient>
                         ))}
@@ -257,16 +262,18 @@ const AdminDashboard = () => {
     const [recentActivites, setRecentActivities] = useState([]);
     const [allPosts, setAllPosts] = useState([]);
     const [allMessages, setAllMessages] = useState([]);
+    const [allComments, setAllComments] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                const [postsRes, newsletterRes, catRes, msgRes] = await Promise.all([
+                const [postsRes, newsletterRes, catRes, msgRes, commentsRes] = await Promise.all([
                     fetch('http://127.0.0.1:8000/posts/'),
                     fetch('http://127.0.0.1:8000/posts/newsletter/'),
                     fetch('http://127.0.0.1:8000/posts/categories/'),
-                    fetch('http://127.0.0.1:8000/posts/contact-message/')
+                    fetch('http://127.0.0.1:8000/posts/contact-message/'),
+                    fetch('http://127.0.0.1:8000/posts/comments/')
                 ]);
 
                 let totalSubscribers = 0;
@@ -289,17 +296,22 @@ const AdminDashboard = () => {
                 }
                 setAllMessages(messagesArr);
 
+                let commentsArr = [];
+                if (commentsRes.ok) {
+                    commentsArr = await commentsRes.json();
+                }
+                setAllComments(commentsArr);
+
                 if (postsRes.ok) {
                     const data = await postsRes.json();
 
                     const totalPosts = data.length;
                     const totalViews = data.reduce((acc, current) => acc + (current.views || 0), 0);
-                    const totalComments = data.reduce((acc, current) => acc + (current.comments ? current.comments.length : 0), 0);
 
                     setStats({
                         posts: totalPosts,
                         views: totalViews,
-                        comments: totalComments,
+                        comments: commentsArr.length,
                         subscribers: totalSubscribers,
                         categories: totalCategories,
                         messages: totalMessages
@@ -367,7 +379,7 @@ const AdminDashboard = () => {
 
             {/* ── Charts Row ── */}
             <div className="charts_row">
-                <BlogActivityChart posts={allPosts} messages={allMessages} />
+                <BlogActivityChart posts={allPosts} messages={allMessages} allComments={allComments} />
                 <ViewsBarChart posts={allPosts} />
             </div>
 
