@@ -217,11 +217,6 @@ const PostDetail = () => {
 
                             {/* Split Section 1: Text + Vertical Image */}
                             <div className="article_split_section split_align_top">
-                                <div className="split_text">
-                                    {post.content2 && (
-                                        <div dangerouslySetInnerHTML={{ __html: post.content2 }} />
-                                    )}
-                                </div>
                                 <div className="split_media">
                                     {post.images?.find(img => img.position === 6) && (
                                         <figure className="article_vertical_image_mini">
@@ -235,6 +230,11 @@ const PostDetail = () => {
                                         </figure>
                                     )}
                                 </div>
+                                <div className="split_text">
+                                    {post.content2 && (
+                                        <div dangerouslySetInnerHTML={{ __html: post.content2 }} />
+                                    )}
+                                </div>
                             </div>
 
                             <blockquote>
@@ -242,7 +242,7 @@ const PostDetail = () => {
                             </blockquote>
 
                             {/* Split Section 2: Square Image + Text (Reversed on Desktop) */}
-                            <div className="article_split_section split_reversed split_align_center">
+                            <div className="article_split_section split_align_center">
                                 <div className="split_media">
                                     {post.images?.find(img => img.position === 7) && (
                                         <figure className="article_square_image_mini">

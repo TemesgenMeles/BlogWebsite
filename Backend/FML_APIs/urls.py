@@ -4,7 +4,7 @@ from .views import (
     CatagoryList, CatagoryDetail,
     CommentList, CommentDetail,
     NewsletterList, NewsletterDetail,
-    MessageList, MessageUpdate
+    MessageList, MessageUpdate, PostImageList, PostImageDetail
 )
 
 urlpatterns = [
@@ -19,4 +19,6 @@ urlpatterns = [
     path('newsletter/<int:pk>/', NewsletterDetail.as_view(), name='newsletter-detail'),
     path('contact-message/', MessageList.as_view(), name='message-list'),
     path('contact-message/<int:pk>/', MessageUpdate.as_view(), name='message-update'),
+    path('post-images/', PostImageList.as_view(), name='post-image-list'),
+    path('post-images/<int:pk>/', PostImageDetail.as_view(), name='post-image-detail'),
 ]

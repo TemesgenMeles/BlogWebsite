@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.response import Response
 from .serializers import PostSerializer, PostImageSerializer, CommentSerializer, NewsletterSerializer, MessageSerializer, CatagorySerializer
-from FML_app.models import Post, Catagory, Comment, Newsletter, Message
+from FML_app.models import Post, Catagory, Comment, Newsletter, Message, Post_Image
 
 # Create your views here.
 class PostList(generics.ListCreateAPIView):
@@ -78,6 +78,14 @@ class MessageList(generics.ListCreateAPIView):
 class MessageUpdate(generics.RetrieveUpdateDestroyAPIView):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
+
+class PostImageList(generics.ListCreateAPIView):
+    queryset = Post_Image.objects.all()
+    serializer_class = PostImageSerializer
+
+class PostImageDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Post_Image.objects.all()
+    serializer_class = PostImageSerializer
 
 class MessageUpdate(generics.RetrieveUpdateDestroyAPIView):
     queryset = Message.objects.all()
