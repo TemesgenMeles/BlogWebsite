@@ -88,7 +88,7 @@ const Home = () => {
                                         <img src="home_bg.png" alt={post.title} />
                                     )}
                                     <div className="card_badge_list">
-                                        {post.catagory?.map(cat => (
+                                        {post.catagory?.slice(0, 3).map(cat => (
                                             <span key={cat.slug} className={`category_badge badge_${cat.slug || 'insight'}`}>
                                                 {cat.name}
                                             </span>

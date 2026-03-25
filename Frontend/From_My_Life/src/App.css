@@ -139,10 +139,17 @@
     border-radius: 10px;
 }
 
-.category_badge {
+.card_badge_list {
     position: absolute;
     top: 10px;
     right: 10px;
+    display: flex;
+    gap: 8px;
+    z-index: 2;
+    flex-direction: row-reverse;
+}
+
+.category_badge {
     padding: 5px 12px;
     border-radius: 20px;
     font-size: 0.85rem;
@@ -150,7 +157,6 @@
     color: white;
     font-family: 'Archivo Black', sans-serif;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 2;
 }
 
 /* Category Colors */

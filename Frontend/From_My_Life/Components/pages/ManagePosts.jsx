@@ -72,7 +72,12 @@ const ManagePosts = () => {
             const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase());
             const matchesCategory = selectedCategory === 'all' ||
                 post.catagory?.some(cat => cat.slug === selectedCategory);
-            const matchesStatus = statusFilter === 'all' || post.status === statusFilter;
+            
+            let matchesStatus = true;
+            if (statusFilter === 'publish') matchesStatus = post.status === 'publish';
+            else if (statusFilter === 'draft') matchesStatus = post.status === 'draft';
+            else if (statusFilter === 'latest') matchesStatus = !!post.latest;
+
             return matchesSearch && matchesCategory && matchesStatus;
         })
         .sort((a, b) => new Date(b.published_date) - new Date(a.published_date));
@@ -153,6 +158,12 @@ const ManagePosts = () => {
                     onClick={() => setStatusFilter('draft')}
                 >
                     Drafts ({posts.filter(p => p.status === 'draft').length})
+                </button>
+                <button
+                    className={`status_tab ${statusFilter === 'latest' ? 'active' : ''}`}
+                    onClick={() => setStatusFilter('latest')}
+                >
+                    Latest Posts ({posts.filter(p => p.latest).length})
                 </button>
             </div>
 
