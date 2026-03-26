@@ -11,6 +11,7 @@ class CatagorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Catagory
         fields = ['id', 'name', 'slug', 'discription']
+        read_only_fields = ['slug']
 
 class PostImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -39,7 +40,7 @@ class PostSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Post
-        fields = ['id', 'title', 'slug', 'main_content', 'excerpt', 'content1', 'content2', 'content3', 'author', 'author_name', 'catagory', 'published_date', 'status','latest', 'likes', 'dislikes', 'views', 'images', 'comments']
+        fields = ['id', 'title', 'slug', 'main_content', 'excerpt', 'content1', 'content2', 'content3', 'quote', 'quote_author', 'tags', 'author', 'author_name', 'catagory', 'published_date', 'status','latest', 'likes', 'dislikes', 'views', 'images', 'comments']
 
 
 class NewsletterSerializer(serializers.ModelSerializer):

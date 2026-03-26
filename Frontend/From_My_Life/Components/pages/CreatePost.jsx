@@ -21,7 +21,10 @@ const CreatePost = () => {
         status: 'publish',
         latest: false,
         catagory: [],
-        images: []
+        images: [],
+        quote: '',
+        quote_author: '',
+        tags: ''
     });
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(isEdit);
@@ -68,7 +71,10 @@ const CreatePost = () => {
                         status: data.status,
                         latest: data.latest,
                         catagory: data.catagory ? data.catagory.map(c => c.id || c) : [],
-                        images: data.images || []
+                        images: data.images || [],
+                        quote: data.quote || '',
+                        quote_author: data.quote_author || '',
+                        tags: data.tags || ''
                     });
                 }
             } catch (error) {
@@ -164,6 +170,9 @@ const CreatePost = () => {
                 status: postData.status,
                 latest: postData.latest,
                 catagory: postData.catagory,
+                quote: postData.quote,
+                quote_author: postData.quote_author,
+                tags: postData.tags,
                 author: 1
             };
 
@@ -422,9 +431,50 @@ const CreatePost = () => {
                                     />
                                 </div>
 
-                                <blockquote>
-                                    "Your powerful quote will appear here. Edit it below."
-                                </blockquote>
+                                <div style={{ margin: '60px 0', padding: '40px', background: 'rgba(70, 200, 85, 0.05)', borderRadius: '0 20px 20px 0', borderLeft: '4px solid var(--primary-color)', position: 'relative' }}>
+                                    <textarea
+                                        name="quote"
+                                        className="ghost_textarea"
+                                        style={{ 
+                                            fontSize: '1.5rem', 
+                                            fontStyle: 'italic', 
+                                            color: '#fff', 
+                                            lineHeight: '1.5',
+                                            width: '100%',
+                                            background: 'transparent',
+                                            border: 'none',
+                                            outline: 'none',
+                                            resize: 'none',
+                                            padding: 0
+                                        }}
+                                        value={postData.quote}
+                                        onChange={handleChange}
+                                        placeholder="Enter a powerful quote..."
+                                        onInput={(e) => {
+                                            e.target.style.height = 'auto';
+                                            e.target.style.height = e.target.scrollHeight + 'px';
+                                        }}
+                                    />
+                                    <input
+                                        type="text"
+                                        name="quote_author"
+                                        value={postData.quote_author}
+                                        onChange={handleChange}
+                                        placeholder="— Author Name (Optional)"
+                                        style={{
+                                            display: 'block',
+                                            width: '100%',
+                                            textAlign: 'right',
+                                            marginTop: '20px',
+                                            fontSize: '1.1rem',
+                                            background: 'transparent',
+                                            border: 'none',
+                                            outline: 'none',
+                                            color: 'var(--primary-color)',
+                                            fontWeight: '600'
+                                        }}
+                                    />
+                                </div>
 
                                 {/* Split Section 2: Image Right + Text Left */}
                                 <div className="article_split_section">
@@ -480,8 +530,21 @@ const CreatePost = () => {
                                     handleImageDescriptionChange={handleImageDescriptionChange}
                                 />
 
+                                <div className="editor_sidebar_group" style={{ margin: '40px 0', background: 'rgba(70, 200, 85, 0.05)' }}>
+                                    <span className="editor_sidebar_label">Tags (comma separated)</span>
+                                    <input
+                                        type="text"
+                                        name="tags"
+                                        className="ghost_textarea"
+                                        style={{ marginBottom: 0, fontSize: '1rem', width: '100%', background: 'transparent', border: 'none', color: 'var(--primary-color)' }}
+                                        value={postData.tags}
+                                        onChange={handleChange}
+                                        placeholder="e.g. Development, Growth, Coding"
+                                    />
+                                </div>
+
                                 <div className="in_article_tags">
-                                    {['Development', 'Growth', 'Coding'].map(tag => (
+                                    {(postData.tags ? postData.tags.split(',').map(tag => tag.trim()) : ['Development', 'Growth', 'Coding']).map(tag => (
                                         <span key={tag} className="content_tag">#{tag}</span>
                                     ))}
                                 </div>

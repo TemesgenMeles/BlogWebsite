@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
+import os
 
 # Create your models here.
 class Catagory(models.Model):
@@ -32,10 +35,13 @@ class Post(models.Model):
     content1 = models.TextField(blank=True, null=True)
     content2 = models.TextField(blank=True, null=True)
     content3 = models.TextField(blank=True, null=True)
+    quote = models.TextField(blank=True, null=True)
+    quote_author = models.CharField(max_length=100, blank=True, null=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     catagory = models.ManyToManyField(Catagory)
     published_date = models.DateTimeField(default=timezone.now)
     status = models.CharField(max_length=10, choices=options, default="publish")
+    tags = models.CharField(max_length=200, blank=True, null=True)
     latest = models.BooleanField(default=False)
     objects = models.Manager()  # Default manager
     posted_objects = PostObjects()  # Custom manager for published posts
@@ -98,3 +104,10 @@ class Message(models.Model):
 
     def __str__(self):
         return self.name
+
+# to delete the image from the file when i delete the image
+@receiver(post_delete, sender=Post_Image)
+def delete_image_file(sender, instance, **kwargs):
+    if instance.image:
+        if os.path.isfile(instance.image.path):
+            os.remove(instance.image.path)

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Pencil, Trash2, Eye, Search, Clock, User, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Pencil, Trash2, Eye, Search, Clock, User, Calendar, ChevronLeft, ChevronRight, MessageSquare, Heart, Twitter, Linkedin, Link as LinkIcon, X } from 'lucide-react';
 
 const CATEGORY_COLORS = {
     showcase: '#8b5cf6',
@@ -23,6 +23,13 @@ const ManagePosts = () => {
     const [showPreview, setShowPreview] = useState(false);
     const [selectedPost, setSelectedPost] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
+    
+    // Deletion states
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [postToDelete, setPostToDelete] = useState(null);
+    const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+
     const POSTS_PER_PAGE = 10;
 
     const fetchData = async () => {
@@ -53,17 +60,29 @@ const ManagePosts = () => {
         fetchData();
     }, []);
 
-    const handleDelete = async (id) => {
-        if (!window.confirm("Are you sure you want to delete this post?")) return;
+    const handleDeleteClick = (post) => {
+        setPostToDelete(post);
+        setShowDeleteConfirm(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!postToDelete) return;
+        setIsDeleting(true);
         try {
-            const response = await fetch(`http://127.0.0.1:8000/posts/${id}/`, {
+            const response = await fetch(`http://127.0.0.1:8000/posts/${postToDelete.id}/`, {
                 method: 'DELETE'
             });
             if (response.ok) {
-                setPosts(posts.filter(post => post.id !== id));
+                setPosts(posts.filter(post => post.id !== postToDelete.id));
+                setShowDeleteConfirm(false);
+                setPostToDelete(null);
+                setShowDeleteSuccess(true);
+                setTimeout(() => setShowDeleteSuccess(false), 3000);
             }
         } catch (error) {
             console.error("Error deleting post:", error);
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -253,7 +272,7 @@ const ManagePosts = () => {
                                                     <Link to={`/admin/posts/edit/${post.id}`} className="action_btn edit" title="Edit Content">
                                                         <Pencil size={16} />
                                                     </Link>
-                                                    <button onClick={() => handleDelete(post.id)} className="action_btn delete" title="Remove Post">
+                                                    <button onClick={() => handleDeleteClick(post)} className="action_btn delete" title="Remove Post">
                                                         <Trash2 size={16} />
                                                     </button>
                                                 </div>
@@ -314,7 +333,34 @@ const ManagePosts = () => {
                     <div className="message_modal_content modal_preview animation_slide_up" onClick={e => e.stopPropagation()}>
                         <div className="modal_header">
                             <h2>Post Preview</h2>
-                            <button className="close_btn" onClick={() => setShowPreview(false)}>&times;</button>
+                            <button 
+                                className="close_btn" 
+                                onClick={() => setShowPreview(false)}
+                                style={{
+                                    background: 'rgba(255, 255, 255, 0.05)',
+                                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                                    borderRadius: '12px',
+                                    color: '#fff',
+                                    padding: '8px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    transition: 'all 0.3s ease',
+                                    cursor: 'pointer'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                                    e.currentTarget.style.transform = 'rotate(90deg)';
+                                    e.currentTarget.style.color = 'var(--primary-color)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                                    e.currentTarget.style.transform = 'rotate(0deg)';
+                                    e.currentTarget.style.color = '#fff';
+                                }}
+                            >
+                                <X size={20} />
+                            </button>
                         </div>
                         <div className="modal_body preview_mode_body" style={{ backgroundColor: '#0f172a', padding: '0', color: '#f8fafc' }}>
                             <article className="post_detail_wrapper" style={{ padding: '0', border: 'none', background: 'transparent' }}>
@@ -364,87 +410,155 @@ const ManagePosts = () => {
                                 </div>
 
                                 {/* Content Section */}
-                                <div className="article_body_container" style={{ maxWidth: '800px', margin: '0 auto', padding: '0 20px 60px' }}>
-                                    <div className="article_rich_text" style={{ color: '#e2e8f0', lineHeight: '1.8', fontSize: '1.125rem' }}>
-                                        {/* Lead Content */}
-                                        {selectedPost.main_content && (
-                                            <div className="lead_content" style={{ fontSize: '1.4rem', marginBottom: '40px', color: '#fff', fontWeight: '400' }}
-                                                dangerouslySetInnerHTML={{ __html: selectedPost.main_content }} />
-                                        )}
-
-                                        {/* Inset Image (Position 2) */}
-                                        {selectedPost.images?.find(img => img.position === 2) && (
-                                            <figure className="article_inset_image" style={{ height: '500px', margin: '40px 0', borderRadius: '20px', overflow: 'hidden', textAlign: 'center' }}>
-                                                <img src={selectedPost.images.find(img => img.position === 2).image} alt="Contextual" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                                {selectedPost.images.find(img => img.position === 2).discription && (
-                                                    <figcaption style={{ padding: '15px', fontSize: '0.9rem', color: '#94a3b8', fontStyle: 'italic', opacity: '0.5' }}
-                                                        dangerouslySetInnerHTML={{ __html: selectedPost.images.find(img => img.position === 2).discription }} />
-                                                )}
-                                            </figure>
-                                        )}
-
-                                        {/* Content Block 1 */}
-                                        {selectedPost.content1 && (
-                                            <div className="dropcap" style={{ marginBottom: '40px' }} dangerouslySetInnerHTML={{ __html: selectedPost.content1 }} />
-                                        )}
-
-                                        {/* Gallery Grid (Positions 3 & 4) */}
-                                        {(selectedPost.images?.find(img => img.position === 3) || selectedPost.images?.find(img => img.position === 4)) && (
-                                            <div className="article_gallery_grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', margin: '60px 0' }}>
-                                                {selectedPost.images?.find(img => img.position === 3) && (
-                                                    <img src={selectedPost.images.find(img => img.position === 3).image} alt="Detail" style={{ width: '100%', height: '350px', objectFit: 'cover', borderRadius: '20px' }} />
-                                                )}
-                                                {selectedPost.images?.find(img => img.position === 4) && (
-                                                    <img src={selectedPost.images.find(img => img.position === 4).image} alt="Detail" style={{ width: '100%', height: '350px', objectFit: 'cover', borderRadius: '20px' }} />
-                                                )}
+                                <div className="article_body_container" style={{ maxWidth: '800px', margin: '0 auto', padding: '0 20px 60px', position: 'relative' }}>
+                                    <div className="article_content_grid" style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: '20px' }}>
+                                        {/* Mock Share Sidebar */}
+                                        <aside className="share_sidebar_sticky" style={{ 
+                                            position: 'sticky', 
+                                            top: '100px', 
+                                            display: 'flex', 
+                                            flexDirection: 'column', 
+                                            alignItems: 'center', 
+                                            gap: '20px',
+                                            paddingTop: '10px'
+                                        }}>
+                                            <span style={{ fontSize: '0.7rem', fontWeight: '800', color: '#94a3b8', letterSpacing: '2px' }}>SHARE</span>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px' }}>
+                                                    <Heart size={20} color={selectedPost.likes > 0 ? '#10b981' : '#94a3b8'} fill={selectedPost.likes > 0 ? '#10b981' : 'none'} />
+                                                    <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>{selectedPost.likes || 0}</span>
+                                                </div>
+                                                <button style={{ background: 'none', border: 'none', padding: 0, color: '#94a3b8' }}><Twitter size={20} /></button>
+                                                <button style={{ background: 'none', border: 'none', padding: 0, color: '#94a3b8' }}><Linkedin size={20} /></button>
+                                                <button style={{ background: 'none', border: 'none', padding: 0, color: '#94a3b8' }}><LinkIcon size={20} /></button>
                                             </div>
-                                        )}
+                                        </aside>
 
-                                        {/* Split Section 1 (Position 6) */}
-                                        <div className="article_split_section" style={{ display: 'flex', gap: '40px', alignItems: 'flex-start', margin: '40px 0' }}>
-                                            <div style={{ flex: '1' }}>
-                                                {selectedPost.content2 && <div dangerouslySetInnerHTML={{ __html: selectedPost.content2 }} />}
-                                            </div>
-                                            {selectedPost.images?.find(img => img.position === 6) && (
-                                                <div className="article_vertical_image_mini" style={{ width: '250px', flexShrink: 0 }}>
-                                                    <img src={selectedPost.images.find(img => img.position === 6).image} alt="Side" style={{ width: '100%', aspectRatio: '2/2', objectFit: 'cover', borderRadius: '20px', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }} />
+                                        <div className="article_rich_text" style={{ color: '#e2e8f0', lineHeight: '1.8', fontSize: '1.125rem' }}>
+                                            {/* Lead Content */}
+                                            {selectedPost.main_content && (
+                                                <div className="lead_content" style={{ fontSize: '1.4rem', marginBottom: '40px', color: '#fff', fontWeight: '400' }}
+                                                    dangerouslySetInnerHTML={{ __html: selectedPost.main_content }} />
+                                            )}
+
+                                            {/* Inset Image (Position 2) */}
+                                            {selectedPost.images?.find(img => img.position === 2) && (
+                                                <figure className="article_inset_image" style={{ height: '500px', margin: '40px 0', borderRadius: '20px', overflow: 'hidden', textAlign: 'center' }}>
+                                                    <img src={selectedPost.images.find(img => img.position === 2).image} alt="Contextual" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                    {selectedPost.images.find(img => img.position === 2).discription && (
+                                                        <figcaption style={{ padding: '15px', fontSize: '0.9rem', color: '#94a3b8', fontStyle: 'italic', opacity: '0.5' }}
+                                                            dangerouslySetInnerHTML={{ __html: selectedPost.images.find(img => img.position === 2).discription }} />
+                                                    )}
+                                                </figure>
+                                            )}
+
+                                            {/* Content Block 1 */}
+                                            {selectedPost.content1 && (
+                                                <div className="dropcap" style={{ marginBottom: '40px' }} dangerouslySetInnerHTML={{ __html: selectedPost.content1 }} />
+                                            )}
+
+                                            {/* Gallery Grid (Positions 3 & 4) */}
+                                            {(selectedPost.images?.find(img => img.position === 3) || selectedPost.images?.find(img => img.position === 4)) && (
+                                                <div className="article_gallery_grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', margin: '60px 0' }}>
+                                                    {selectedPost.images?.find(img => img.position === 3) && (
+                                                        <img src={selectedPost.images.find(img => img.position === 3).image} alt="Detail" style={{ width: '100%', height: '350px', objectFit: 'cover', borderRadius: '20px' }} />
+                                                    )}
+                                                    {selectedPost.images?.find(img => img.position === 4) && (
+                                                        <img src={selectedPost.images.find(img => img.position === 4).image} alt="Detail" style={{ width: '100%', height: '350px', objectFit: 'cover', borderRadius: '20px' }} />
+                                                    )}
                                                 </div>
                                             )}
-                                        </div>
 
-                                        <blockquote style={{ margin: '60px 0', padding: '40px', background: 'rgba(70, 200, 85, 0.05)', borderRadius: '0 20px 20px 0', borderLeft: '4px solid var(--primary-color)', fontStyle: 'italic', fontSize: '1.5rem', color: '#fff', lineHeight: '1.5' }}>
-                                            "Coding isn't just about syntax; it's about solving problems and creating experiences that resonate with people."
-                                        </blockquote>
-
-                                        {/* Split Section 2 (Position 7) */}
-                                        <div className="article_split_section" style={{ display: 'flex', gap: '40px', alignItems: 'center', margin: '40px 0', flexDirection: 'row-reverse' }}>
-                                            <div style={{ flex: '1' }}>
-                                                {selectedPost.content3 && <div dangerouslySetInnerHTML={{ __html: selectedPost.content3 }} />}
-                                            </div>
-                                            {selectedPost.images?.find(img => img.position === 7) && (
-                                                <div className="article_square_image_mini" style={{ width: '250px', flexShrink: 0 }}>
-                                                    <img src={selectedPost.images.find(img => img.position === 7).image} alt="Side" style={{ width: '100%', aspectRatio: '1/1', objectFit: 'cover', borderRadius: '20px', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }} />
+                                            {/* Split Section 1 (Position 6) */}
+                                            <div className="article_split_section" style={{ display: 'flex', gap: '40px', alignItems: 'flex-start', margin: '40px 0' }}>
+                                                <div style={{ flex: '1' }}>
+                                                    {selectedPost.content2 && <div dangerouslySetInnerHTML={{ __html: selectedPost.content2 }} />}
                                                 </div>
-                                            )}
-                                        </div>
-
-                                        {/* Wide Section Break (Position 5) */}
-                                        {selectedPost.images?.find(img => img.position === 5) && (
-                                            <div className="article_break_image" style={{ margin: '80px -20px', width: 'calc(100% + 40px)' }}>
-                                                <img src={selectedPost.images.find(img => img.position === 5).image} alt="Divider" style={{ width: '100%', height: '450px', objectFit: 'cover', borderRadius: '30px' }} />
-                                            </div>
-                                        )}
-
-                                        {/* Cinematic Closing (Position 8) */}
-                                        {selectedPost.images?.find(img => img.position === 8) && (
-                                            <div className="article_cinematic_image" style={{ margin: '60px 0 40px' }}>
-                                                <img src={selectedPost.images.find(img => img.position === 8).image} alt="Closing" style={{ width: '100%', aspectRatio: '21/9', objectFit: 'cover', borderRadius: '10px', boxShadow: '0 30px 60px rgba(0,0,0,0.4)' }} />
-                                                {selectedPost.images.find(img => img.position === 8).discription && (
-                                                    <div className="image_caption_simple" style={{ marginTop: '15px', textAlign: 'center', color: '#94a3b8', fontSize: '0.9rem', opacity: '0.4', textTransform: 'uppercase', letterSpacing: '1px' }}
-                                                        dangerouslySetInnerHTML={{ __html: selectedPost.images.find(img => img.position === 8).discription }} />
+                                                {selectedPost.images?.find(img => img.position === 6) && (
+                                                    <div className="article_vertical_image_mini" style={{ width: '250px', flexShrink: 0 }}>
+                                                        <img src={selectedPost.images.find(img => img.position === 6).image} alt="Side" style={{ width: '100%', aspectRatio: '2/2', objectFit: 'cover', borderRadius: '20px', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }} />
+                                                    </div>
                                                 )}
                                             </div>
-                                        )}
+
+                                            <blockquote style={{ margin: '60px 0', padding: '40px', background: 'rgba(70, 200, 85, 0.05)', borderRadius: '0 20px 20px 0', borderLeft: '4px solid var(--primary-color)', fontStyle: 'italic', fontSize: '1.5rem', color: '#fff', lineHeight: '1.5', position: 'relative' }}>
+                                                {selectedPost.quote ? selectedPost.quote : "Coding isn't just about syntax; it's about solving problems and creating experiences that resonate with people."}
+                                                {selectedPost.quote_author && (
+                                                    <div style={{ 
+                                                        textAlign: 'right', 
+                                                        marginTop: '20px', 
+                                                        fontSize: '1.1rem', 
+                                                        opacity: 0.8, 
+                                                        fontStyle: 'normal',
+                                                        fontWeight: '600',
+                                                        color: 'var(--primary-color)'
+                                                    }}>
+                                                        — {selectedPost.quote_author}
+                                                    </div>
+                                                )}
+                                            </blockquote>
+
+                                            {/* Split Section 2 (Position 7) */}
+                                            <div className="article_split_section" style={{ display: 'flex', gap: '40px', alignItems: 'center', margin: '40px 0', flexDirection: 'row-reverse' }}>
+                                                <div style={{ flex: '1' }}>
+                                                    {selectedPost.content3 && <div dangerouslySetInnerHTML={{ __html: selectedPost.content3 }} />}
+                                                </div>
+                                                {selectedPost.images?.find(img => img.position === 7) && (
+                                                    <div className="article_square_image_mini" style={{ width: '250px', flexShrink: 0 }}>
+                                                        <img src={selectedPost.images.find(img => img.position === 7).image} alt="Side" style={{ width: '100%', aspectRatio: '1/1', objectFit: 'cover', borderRadius: '20px', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }} />
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {/* Wide Section Break (Position 5) */}
+                                            {selectedPost.images?.find(img => img.position === 5) && (
+                                                <div className="article_break_image" style={{ margin: '80px -20px', width: 'calc(100% + 40px)' }}>
+                                                    <img src={selectedPost.images.find(img => img.position === 5).image} alt="Divider" style={{ width: '100%', height: '450px', objectFit: 'cover', borderRadius: '30px' }} />
+                                                </div>
+                                            )}
+
+                                            <div className="in_article_tags" style={{ marginTop: '40px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                                                {(selectedPost.tags ? selectedPost.tags.split(',').map(tag => tag.trim()) : ['Development', 'Growth', 'Coding']).map(tag => (
+                                                    <span key={tag} className="content_tag" style={{ background: 'rgba(70, 200, 85, 0.1)', color: 'var(--primary-color)', padding: '6px 16px', borderRadius: '30px', fontSize: '0.9rem', fontWeight: '500' }}>#{tag}</span>
+                                                ))}
+                                            </div>
+
+                                            {/* Cinematic Closing (Position 8) */}
+                                            {selectedPost.images?.find(img => img.position === 8) && (
+                                                <div className="article_cinematic_image" style={{ margin: '60px 0 40px' }}>
+                                                    <img src={selectedPost.images.find(img => img.position === 8).image} alt="Closing" style={{ width: '100%', aspectRatio: '21/9', objectFit: 'cover', borderRadius: '10px', boxShadow: '0 30px 60px rgba(0,0,0,0.4)' }} />
+                                                    {selectedPost.images.find(img => img.position === 8).discription && (
+                                                        <div className="image_caption_simple" style={{ marginTop: '15px', textAlign: 'center', color: '#94a3b8', fontSize: '0.9rem', opacity: '0.4', textTransform: 'uppercase', letterSpacing: '1px' }}
+                                                            dangerouslySetInnerHTML={{ __html: selectedPost.images.find(img => img.position === 8).discription }} />
+                                                    )}
+                                                </div>
+                                            )}
+
+                                            {/* Mock Comments Section */}
+                                            <div className="comments_section" style={{ marginTop: '80px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '40px' }}>
+                                                <h3 style={{ fontSize: '1.5rem', marginBottom: '30px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                                    <MessageSquare size={24} color="var(--primary-color)" /> Comments ({selectedPost.comments?.length || 0})
+                                                </h3>
+                                                <div className="mock_comments_list" style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
+                                                    {selectedPost.comments?.length > 0 ? selectedPost.comments.map(c => (
+                                                        <div key={c.id} style={{ display: 'flex', gap: '15px' }}>
+                                                            <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
+                                                                {c.name ? c.name[0].toUpperCase() : 'U'}
+                                                            </div>
+                                                            <div>
+                                                                <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '4px' }}>
+                                                                    <span style={{ fontWeight: '600' }}>{c.name}</span>
+                                                                    <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>{new Date(c.commented_date).toLocaleDateString()}</span>
+                                                                </div>
+                                                                <p style={{ color: '#94a3b8', fontSize: '0.95rem' }}>{c.comment}</p>
+                                                            </div>
+                                                        </div>
+                                                    )) : (
+                                                        <p style={{ color: '#94a3b8', fontStyle: 'italic' }}>No comments yet.</p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </article>
@@ -458,6 +572,64 @@ const ManagePosts = () => {
                             </button>
                         </div>
                     </div>
+                </div>
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {showDeleteConfirm && postToDelete && (
+                <div className="message_modal_overlay" style={{ zIndex: 1100 }}>
+                    <div className="message_modal_content animation_slide_up" style={{ maxWidth: '450px', padding: '40px', textAlign: 'center' }}>
+                        <div style={{ marginBottom: '25px', color: '#ef4444' }}>
+                            <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(239, 68, 68, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+                                <Trash2 size={40} />
+                            </div>
+                            <h2 style={{ fontSize: '1.5rem', fontWeight: '800', color: '#fff' }}>Delete Post?</h2>
+                            <p style={{ color: '#94a3b8', marginTop: '10px', fontSize: '1rem' }}>
+                                Are you sure you want to delete <strong>"{postToDelete.title}"</strong>?<br/>
+                                This will also permanently remove all related images.
+                            </p>
+                        </div>
+                        <div style={{ display: 'flex', gap: '15px' }}>
+                            <button 
+                                className="admin_btn_secondary" 
+                                style={{ flex: 1, padding: '12px' }} 
+                                onClick={() => { setShowDeleteConfirm(false); setPostToDelete(null); }}
+                                disabled={isDeleting}
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                className="admin_btn_primary" 
+                                style={{ flex: 1, padding: '12px', background: '#ef4444' }} 
+                                onClick={confirmDelete}
+                                disabled={isDeleting}
+                            >
+                                {isDeleting ? 'Deleting...' : 'Delete Permanently'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Success Notification */}
+            {showDeleteSuccess && (
+                <div style={{ 
+                    position: 'fixed', 
+                    top: '30px', 
+                    left: '50%', 
+                    transform: 'translateX(-50%)', 
+                    background: '#10b981', 
+                    color: '#fff', 
+                    padding: '16px 32px', 
+                    borderRadius: '12px', 
+                    boxShadow: '0 10px 30px rgba(16, 185, 129, 0.3)', 
+                    zIndex: 2000,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    fontWeight: '600'
+                , animation: 'slideDownFade 0.5s ease' }}>
+                    <Plus size={20} style={{ transform: 'rotate(45deg)' }} /> Post deleted successfully!
                 </div>
             )}
         </div>

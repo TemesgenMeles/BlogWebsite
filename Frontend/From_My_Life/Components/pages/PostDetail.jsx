@@ -237,8 +237,21 @@ const PostDetail = () => {
                                 </div>
                             </div>
 
-                            <blockquote>
-                                "Coding isn't just about syntax; it's about solving problems and creating experiences that resonate with people."
+                            <blockquote style={{ position: 'relative' }}>
+                                {post.quote ? post.quote : "Coding isn't just about syntax; it's about solving problems and creating experiences that resonate with people."}
+                                {post.quote_author && (
+                                    <div style={{ 
+                                        textAlign: 'right', 
+                                        marginTop: '20px', 
+                                        fontSize: '1.1rem', 
+                                        opacity: 0.8, 
+                                        fontStyle: 'normal',
+                                        fontWeight: '600',
+                                        color: 'var(--primary-color)'
+                                    }}>
+                                        — {post.quote_author}
+                                    </div>
+                                )}
                             </blockquote>
 
                             {/* Split Section 2: Square Image + Text (Reversed on Desktop) */}
@@ -281,7 +294,7 @@ const PostDetail = () => {
                             )}
 
                             <div className="in_article_tags">
-                                {['Development', 'Growth', 'Coding'].map(tag => (
+                                {(post.tags ? post.tags.split(',').map(tag => tag.trim()) : ['Development', 'Growth', 'Coding']).map(tag => (
                                     <span key={tag} className="content_tag">#{tag}</span>
                                 ))}
                             </div>

@@ -33,7 +33,7 @@ const AdminLayout = () => {
                     sender: c.name,
                     content: c.comment,
                     date: c.commented_date,
-                    path: '/admin/comments'
+                    path: `/admin/comments?view=${c.id}`
                 }))
             ].sort((a, b) => new Date(b.date) - new Date(a.date));
 
