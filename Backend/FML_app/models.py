@@ -88,7 +88,7 @@ class Comment(models.Model):
         return self.name
     
 class Newsletter(models.Model):
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     subscribed_date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):

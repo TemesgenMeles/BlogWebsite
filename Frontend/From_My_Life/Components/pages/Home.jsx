@@ -34,7 +34,12 @@ const Home = () => {
                 setNewsletterStatus('success');
                 setNewsletterEmail('');
             } else {
-                setNewsletterStatus('error');
+                const errorData = await response.json();
+                if (errorData.email && errorData.email[0].includes('already exists')) {
+                    setNewsletterStatus('exists');
+                } else {
+                    setNewsletterStatus('error');
+                }
             }
         } catch (error) {
             console.error('Error subscribing:', error);
@@ -173,6 +178,7 @@ const Home = () => {
                         </button>
                     </form>
                     {newsletterStatus === 'success' && <p style={{ color: 'var(--primary-color)', marginTop: '10px' }}>Successfully subscribed!</p>}
+                    {newsletterStatus === 'exists' && <p style={{ color: 'var(--primary-color)', marginTop: '10px' }}>You are already subscribed!</p>}
                     {newsletterStatus === 'error' && <p style={{ color: 'red', marginTop: '10px' }}>Failed to subscribe. Please try again.</p>}
                 </div>
             </section>
