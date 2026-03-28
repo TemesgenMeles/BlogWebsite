@@ -241,14 +241,14 @@ const CreatePost = () => {
         <article className="post_detail_wrapper editor_mode">
             <form onSubmit={handleSubmit}>
                 {/* Minimal Header */}
-                <div className="article_top_nav">
-                    <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Link to="/admin/posts" className="back_btn">
-                            <ChevronLeft size={20} /> Back to Dashboard
+                <div className="article_top_nav admin_header_glass">
+                    <div className="admin_header_container">
+                        <Link to="/admin/posts" className="admin_btn_back">
+                            <ChevronLeft size={18} /> Back
                         </Link>
-                        <div style={{ display: 'flex', gap: '15px' }}>
-                            <button type="button" onClick={() => navigate('/admin/posts')} className="admin_btn_cancel">Cancel</button>
-                            <button type="submit" className="admin_btn_save" disabled={saving}>
+                        <div className="admin_header_actions">
+                            <button type="button" onClick={() => navigate('/admin/posts')} className="admin_btn_secondary">Cancel</button>
+                            <button type="submit" className="admin_btn_primary" disabled={saving}>
                                 <Save size={18} /> {saving ? 'Saving...' : 'Save Story'}
                             </button>
                         </div>
@@ -263,13 +263,13 @@ const CreatePost = () => {
                                     postData.catagory.map(catId => {
                                         const cat = categories.find(c => c.id === catId);
                                         return cat ? (
-                                            <span key={cat.id} className={`category_pill badge_${cat.slug || 'insight'}`} style={{ marginRight: '10px' }}>
+                                            <span key={cat.id} className="status_badge publish">
                                                 {cat.name}
                                             </span>
                                         ) : null;
                                     })
                                 ) : (
-                                    <span className="category_pill" style={{ opacity: 0.3 }}>No Category Selected</span>
+                                    <span className="status_badge draft">Uncategorized</span>
                                 )}
                             </div>
                             <div className="read_time"><Clock size={14} /> Live Preview Mode</div>
@@ -285,13 +285,13 @@ const CreatePost = () => {
                             required
                         />
 
-                        <div className="author_meta_box">
-                            <div className="avatar_initials">A</div>
-                            <div className="author_info">
-                                <h4>Admin Editor</h4>
-                                <div className="meta_details">
-                                    <span className="meta_item"><Calendar size={12} /> {new Date().toLocaleDateString()}</span>
-                                    <span className="meta_item"><Eye size={12} /> Live Preview</span>
+                        <div className="author_meta_box admin_author_box">
+                            <div className="user_avatar">A</div>
+                            <div className="user_meta">
+                                <strong>Admin Editor</strong>
+                                <div className="date_cell">
+                                    <span><Calendar size={12} className="text_muted" /> {new Date().toLocaleDateString()}</span>
+                                    <span><Eye size={12} className="text_muted" /> Live Preview</span>
                                 </div>
                             </div>
                         </div>
@@ -315,49 +315,77 @@ const CreatePost = () => {
                     <div className="container_narrow">
                         <div className="article_content_grid">
                             {/* Sticky Sidebar */}
-                            <aside className="share_sidebar_sticky">
+                            <aside className="editor_sidebar admin_card">
                                 <div className="editor_sidebar_group">
-                                    <span className="editor_sidebar_label">Publishing</span>
-                                    <select
-                                        name="status"
-                                        className="editor_status_select"
-                                        value={postData.status}
-                                        onChange={handleChange}
-                                    >
-                                        <option value="publish">Published</option>
-                                        <option value="draft">Draft</option>
-                                    </select>
-                                    <label className="editor_checkbox_row">
+                                    <label className="admin_label">Publishing Status</label>
+                                    <div className="admin_select_wrapper">
+                                        <select
+                                            name="status"
+                                            className="admin_input"
+                                            value={postData.status}
+                                            onChange={handleChange}
+                                        >
+                                            <option value="publish">Published</option>
+                                            <option value="draft">Draft</option>
+                                        </select>
+                                    </div>
+                                    <label className="admin_check_label">
                                         <input
                                             type="checkbox"
                                             name="latest"
+                                            className="admin_checkbox"
                                             checked={postData.latest}
                                             onChange={handleChange}
                                         />
-                                        Latest Post
+                                        <span>Mark as Latest Post</span>
                                     </label>
                                 </div>
 
                                 <div className="editor_sidebar_group">
-                                    <span className="editor_sidebar_label">Categories</span>
-                                    <div className="editor_cat_list">
+                                    <label className="admin_label">Categories</label>
+                                    <div className="category_pill_list editor_selection_list">
                                         {categories.map(cat => (
                                             <div
                                                 key={cat.id}
-                                                className={`editor_cat_pill ${postData.catagory.includes(cat.id) ? 'active' : ''}`}
+                                                className={`status_badge ${postData.catagory.includes(cat.id) ? 'publish' : 'draft pointer'}`}
                                                 onClick={() => handleCategoryChange(cat.id)}
                                             >
-                                                <Plus size={14} /> {cat.name}
+                                                {postData.catagory.includes(cat.id) ? <X size={12} /> : <Plus size={12} />} {cat.name}
                                             </div>
                                         ))}
                                     </div>
                                 </div>
 
-                                <div className="editor_actions_row">
-                                    <button type="submit" className="admin_btn_save" disabled={saving}>
-                                        <Save size={18} /> {saving ? 'Save' : 'Save Story'}
+                                <div className="editor_sidebar_group">
+                                    <label className="admin_label">SEO Meta</label>
+                                    <textarea
+                                        ref={textareaRefs.excerpt}
+                                        name="excerpt"
+                                        className="admin_input"
+                                        style={{ minHeight: '120px', resize: 'vertical' }}
+                                        value={postData.excerpt}
+                                        onChange={handleChange}
+                                        placeholder="Add a search-friendly summary..."
+                                    />
+                                </div>
+
+                                <div className="editor_sidebar_group">
+                                    <label className="admin_label">Tags</label>
+                                    <input
+                                        type="text"
+                                        name="tags"
+                                        className="admin_input"
+                                        value={postData.tags}
+                                        onChange={handleChange}
+                                        placeholder="Add tags, separated by commas..."
+                                    />
+                                </div>
+
+                                <div className="modal_actions editor_sidebar_actions">
+                                    <button type="submit" className="admin_btn_primary w_full" disabled={saving}>
+                                        <Save size={18} /> {saving ? 'Saving...' : 'Save Changes'}
                                     </button>
-                                    <Link to="/admin/posts" className="admin_btn_cancel">Discard Changes</Link>
+                                    <button type="button" onClick={() => navigate('/admin/posts')} className="admin_btn_secondary w_full">Discard Changes</button>
                                 </div>
                             </aside>
 
@@ -431,25 +459,16 @@ const CreatePost = () => {
                                     />
                                 </div>
 
-                                <div style={{ margin: '60px 0', padding: '40px', background: 'rgba(70, 200, 85, 0.05)', borderRadius: '0 20px 20px 0', borderLeft: '4px solid var(--primary-color)', position: 'relative' }}>
+                                <div className="admin_card editor_quote_section">
+                                    <div className="modal_icon_box success">
+                                        <FileText size={24} />
+                                    </div>
                                     <textarea
                                         name="quote"
-                                        className="ghost_textarea"
-                                        style={{ 
-                                            fontSize: '1.5rem', 
-                                            fontStyle: 'italic', 
-                                            color: '#fff', 
-                                            lineHeight: '1.5',
-                                            width: '100%',
-                                            background: 'transparent',
-                                            border: 'none',
-                                            outline: 'none',
-                                            resize: 'none',
-                                            padding: 0
-                                        }}
+                                        className="ghost_textarea quote_input"
                                         value={postData.quote}
                                         onChange={handleChange}
-                                        placeholder="Enter a powerful quote..."
+                                        placeholder="Add a powerful quote to your story..."
                                         onInput={(e) => {
                                             e.target.style.height = 'auto';
                                             e.target.style.height = e.target.scrollHeight + 'px';
@@ -458,21 +477,10 @@ const CreatePost = () => {
                                     <input
                                         type="text"
                                         name="quote_author"
+                                        className="quote_author_input"
                                         value={postData.quote_author}
                                         onChange={handleChange}
-                                        placeholder="— Author Name (Optional)"
-                                        style={{
-                                            display: 'block',
-                                            width: '100%',
-                                            textAlign: 'right',
-                                            marginTop: '20px',
-                                            fontSize: '1.1rem',
-                                            background: 'transparent',
-                                            border: 'none',
-                                            outline: 'none',
-                                            color: 'var(--primary-color)',
-                                            fontWeight: '600'
-                                        }}
+                                        placeholder="— Enter Quote Author (Optional)"
                                     />
                                 </div>
 
@@ -495,18 +503,7 @@ const CreatePost = () => {
                                     />
                                 </div>
 
-                                <div className="editor_sidebar_group" style={{ margin: '40px 0', background: 'rgba(70, 200, 85, 0.05)' }}>
-                                    <span className="editor_sidebar_label">SEO Excerpt / Summary</span>
-                                    <textarea
-                                        ref={textareaRefs.excerpt}
-                                        name="excerpt"
-                                        className="ghost_textarea"
-                                        style={{ marginBottom: 0, fontSize: '1rem' }}
-                                        value={postData.excerpt}
-                                        onChange={handleChange}
-                                        placeholder="A short summary for search engines and social cards..."
-                                    />
-                                </div>
+
 
                                 {/* Image 5 - Wide Section Break */}
                                 <ImageEditor 
@@ -530,18 +527,7 @@ const CreatePost = () => {
                                     handleImageDescriptionChange={handleImageDescriptionChange}
                                 />
 
-                                <div className="editor_sidebar_group" style={{ margin: '40px 0', background: 'rgba(70, 200, 85, 0.05)' }}>
-                                    <span className="editor_sidebar_label">Tags (comma separated)</span>
-                                    <input
-                                        type="text"
-                                        name="tags"
-                                        className="ghost_textarea"
-                                        style={{ marginBottom: 0, fontSize: '1rem', width: '100%', background: 'transparent', border: 'none', color: 'var(--primary-color)' }}
-                                        value={postData.tags}
-                                        onChange={handleChange}
-                                        placeholder="e.g. Development, Growth, Coding"
-                                    />
-                                </div>
+
 
                                 <div className="in_article_tags">
                                     {(postData.tags ? postData.tags.split(',').map(tag => tag.trim()) : ['Development', 'Growth', 'Coding']).map(tag => (
@@ -565,27 +551,28 @@ const ImageEditor = ({ position, label, className, images, getImagePreview, hand
     const fileInputRef = useRef(null);
 
     return (
-        <div className={`article_image_container ${className || ''}`}>
+        <div className={`editor_image_section ${className || ''}`}>
+            <label className="admin_label">{label}</label>
             <div
-                className="image_edit_container"
+                className="image_edit_surface admin_card"
                 onClick={() => fileInputRef.current?.click()}
-                style={{ cursor: 'pointer' }}
             >
                 {previewUrl ? (
-                    <img src={previewUrl} alt={label} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src={previewUrl} alt={label} className="preview_img" />
                 ) : (
-                    <div className="image_fallback_hero" style={{ background: 'rgba(255,255,255,0.05)', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <ImageIcon size={48} opacity={0.2} />
+                    <div className="image_placeholder">
+                        <ImageIcon size={32} />
+                        <span>Click to Upload</span>
                     </div>
                 )}
-                <div className="image_upload_overlay">
-                    <ImageIcon size={24} />
-                    <span style={{ fontSize: '0.8rem' }}>Upload {label}</span>
+                <div className="surface_overlay">
+                    <ImageIcon size={20} />
+                    <span>Change Image</span>
                 </div>
             </div>
             <textarea 
-                className="editor_figcaption"
-                placeholder="Add description..."
+                className="admin_input image_caption"
+                placeholder="Image caption..."
                 value={description}
                 onClick={e => e.stopPropagation()}
                 onChange={(e) => handleImageDescriptionChange(position, e.target.value)}
@@ -593,7 +580,6 @@ const ImageEditor = ({ position, label, className, images, getImagePreview, hand
                     e.target.style.height = 'auto';
                     e.target.style.height = e.target.scrollHeight + 'px';
                 }}
-                style={{ height: 'auto' }}
             />
             <input
                 type="file"

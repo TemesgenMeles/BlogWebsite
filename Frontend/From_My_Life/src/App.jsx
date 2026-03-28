@@ -18,6 +18,19 @@ import ManageCategories from '../Components/pages/ManageCategories'
 import ManageComments from '../Components/pages/ManageComments'
 import ManageMessages from '../Components/pages/ManageMessages'
 import ManageSubscribers from '../Components/pages/ManageSubscribers'
+import Login from '../Components/pages/Login'
+import ManageUsers from '../Components/pages/ManageUsers'
+import ProtectedRoute from '../Components/utils/ProtectedRoute'
+import { AuthProvider } from './context/AuthContext'
+import { Outlet } from 'react-router-dom'
+
+const GlobalLayout = () => {
+  return (
+    <AuthProvider>
+      <Outlet />
+    </AuthProvider>
+  )
+}
 
 function App() {
   const [count, setCount] = useState(0)
@@ -26,7 +39,7 @@ function App() {
 
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <>
+      <Route element={<GlobalLayout />}>
         <Route path="/" element={<RootLayout />}>
           <Route index element={<Home />} />
           <Route path="/about" element={<About />} />
@@ -34,18 +47,22 @@ function App() {
           <Route path="/posts" element={<Posts />} />
           <Route path="/posts/:id" element={<PostDetail />} />
         </Route>
+        <Route path="/login" element={<Login />} />
         {/* Admin Routes */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AdminDashboard />} />
-          <Route path="posts" element={<ManagePosts />} />
-          <Route path="posts/create" element={<CreatePost />} />
-          <Route path="posts/edit/:id" element={<CreatePost />} />
-          <Route path="categories" element={<ManageCategories />} />
-          <Route path="comments" element={<ManageComments />} />
-          <Route path="messages" element={<ManageMessages />} />
-          <Route path="subscribers" element={<ManageSubscribers />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="posts" element={<ManagePosts />} />
+            <Route path="posts/create" element={<CreatePost />} />
+            <Route path="posts/edit/:id" element={<CreatePost />} />
+            <Route path="categories" element={<ManageCategories />} />
+            <Route path="comments" element={<ManageComments />} />
+            <Route path="messages" element={<ManageMessages />} />
+            <Route path="subscribers" element={<ManageSubscribers />} />
+            <Route path="users" element={<ManageUsers />} />
+          </Route>
         </Route>
-      </>
+      </Route>
     )
   )
 

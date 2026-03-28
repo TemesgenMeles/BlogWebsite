@@ -4,10 +4,13 @@ from .views import (
     CatagoryList, CatagoryDetail,
     CommentList, CommentDetail,
     NewsletterList, NewsletterDetail,
-    MessageList, MessageUpdate, PostImageList, PostImageDetail
+    MessageList, MessageUpdate, PostImageList, PostImageDetail,
+    UserList, UserDetail
 )
 
 urlpatterns = [
+    path('users/', UserList.as_view(), name='user-list'),
+    path('users/<int:pk>/', UserDetail.as_view(), name='user-detail'),
     path('', PostList.as_view(), name='post-list'),
     path('<int:pk>/', PostDetail.as_view(), name='post-detail'),
     path('<int:pk>/like/', PostLike.as_view(), name='post-like'),

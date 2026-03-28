@@ -1,10 +1,22 @@
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.response import Response
-from .serializers import PostSerializer, PostImageSerializer, CommentSerializer, NewsletterSerializer, MessageSerializer, CatagorySerializer
+from rest_framework.permissions import AllowAny, IsAdminUser
+from .serializers import PostSerializer, PostImageSerializer, CommentSerializer, NewsletterSerializer, MessageSerializer, CatagorySerializer, UserSerializer
 from FML_app.models import Post, Catagory, Comment, Newsletter, Message, Post_Image
+from django.contrib.auth.models import User
 
 # Create your views here.
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
+    permission_classes = [IsAdminUser]
+
+class UserDetail(generics.RetrieveDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAdminUser]
+
 class PostList(generics.ListCreateAPIView):
     serializer_class = PostSerializer
 

@@ -1,9 +1,11 @@
 import { Outlet, NavLink } from 'react-router-dom';
 import '../../src/Admin.css';
 import { LayoutDashboard, Users, FileText, Settings, LogOut, Sun, Moon, Bell, ChevronRight } from 'lucide-react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
+import AuthContext from '../../src/context/AuthContext';
 
 const AdminLayout = () => {
+    const { logoutUser } = useContext(AuthContext);
     const [notifications, setNotifications] = useState([]);
     const [showNotifications, setShowNotifications] = useState(false);
     const notificationRef = useRef(null);
@@ -45,10 +47,8 @@ const AdminLayout = () => {
 
     useEffect(() => {
         fetchNotifications();
-        // Refresh every 30 seconds
         const interval = setInterval(fetchNotifications, 30000);
 
-        // Click outside to close notifications
         const handleClickOutside = (event) => {
             if (notificationRef.current && !notificationRef.current.contains(event.target)) {
                 setShowNotifications(false);
@@ -83,7 +83,7 @@ const AdminLayout = () => {
         <div className="admin_container">
             <aside className="admin_sidebar">
                 <div className="admin_logo">
-                    <img src="/logo_green.png" alt="Admin Logo" style={{ height: '60px', width: 'auto' }} />
+                    <img src="/logo_green.png" alt="Admin Logo" />
                 </div>
                 <nav className="admin_nav">
                     <ul className="admin_nav_list">
@@ -99,22 +99,27 @@ const AdminLayout = () => {
                         </li>
                         <li>
                             <NavLink to="/admin/categories" className={({ isActive }) => isActive ? 'admin_active' : ''}>
-                                <LayoutDashboard size={20} /> Categories
+                                <Folder size={20} /> Categories
                             </NavLink>
                         </li>
                         <li>
                             <NavLink to="/admin/comments" className={({ isActive }) => isActive ? 'admin_active' : ''}>
-                                <Bell size={20} /> Comments
+                                <MessageSquare size={20} /> Comments
                             </NavLink>
                         </li>
                         <li>
                             <NavLink to="/admin/messages" className={({ isActive }) => isActive ? 'admin_active' : ''}>
-                                <Bell size={20} /> Messages
+                                <Mail size={20} /> Messages
                             </NavLink>
                         </li>
                         <li>
                             <NavLink to="/admin/subscribers" className={({ isActive }) => isActive ? 'admin_active' : ''}>
                                 <Users size={20} /> Subscribers
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink to="/admin/users" className={({ isActive }) => isActive ? 'admin_active' : ''}>
+                                <Users size={20} /> Manage Users
                             </NavLink>
                         </li>
                         <li>
@@ -126,21 +131,16 @@ const AdminLayout = () => {
                 </nav>
                 <div className="admin_footer_nav">
                     <NavLink to="/">
-                        <LogOut size={20} /> Back to Site
+                        <LayoutDashboard size={20} /> Back to Site
                     </NavLink>
+                    <button onClick={logoutUser} className="admin_logout_btn">
+                        <LogOut size={20} /> Logout
+                    </button>
                 </div>
             </aside>
             <main className="admin_main_content">
                 <header className="admin_topbar">
-                    <NavLink to="/admin" className="topbar_logo_link">
-                        <img src="/logo.png" alt="Dashboard Home" style={{ height: '45px', width: 'auto' }} />
-                    </NavLink>
-                    <div style={{ flex: 1 }}></div>
-                    <div
-                        className="admin_notifications"
-                        ref={notificationRef}
-                        onClick={() => setShowNotifications(!showNotifications)}
-                    >
+                    <div className="admin_notifications" ref={notificationRef} onClick={() => setShowNotifications(!showNotifications)}>
                         <Bell size={20} />
                         {notifications.length > 0 && (
                             <span className="notification_badge">
@@ -186,7 +186,7 @@ const AdminLayout = () => {
                         )}
                     </div>
                     <div className="admin_topbar_user">
-                        <span>Welcome, Admin</span>
+                        <span>Admin Dashboard</span>
                     </div>
                 </header>
                 <div className="admin_content_area">
