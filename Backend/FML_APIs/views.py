@@ -12,7 +12,7 @@ class UserList(generics.ListAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsAdminUser]
 
-class UserDetail(generics.RetrieveDestroyAPIView):
+class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAdminUser]
@@ -84,7 +84,7 @@ class NewsletterDetail(generics.RetrieveDestroyAPIView):
     serializer_class = NewsletterSerializer
 
 class MessageList(generics.ListCreateAPIView):
-    queryset = Message.objects.all().order_by('-message_date')
+    queryset = Message.objects.all().order_by('-new','-message_date')
     serializer_class = MessageSerializer
 
 class MessageUpdate(generics.RetrieveUpdateDestroyAPIView):

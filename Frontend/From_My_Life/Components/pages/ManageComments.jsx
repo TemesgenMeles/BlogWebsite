@@ -217,85 +217,105 @@ const ManageComments = () => {
                         <table className="admin_table">
                             <thead>
                                 <tr>
-                                    <th className="text_left pl_20">Author Info</th>
-                                    <th className="text_left">Target Story</th>
-                                    <th className="text_left">Comment Snippet</th>
-                                    <th className="text_center">Status</th>
-                                    <th className="text_center">Actions</th>
+                                    <th style={{ textAlign: 'left', paddingLeft: '20px' }}>Author Info</th>
+                                    <th style={{ textAlign: 'left' }}>Target Story</th>
+                                    <th style={{ textAlign: 'left' }}>Comment Snippet</th>
+                                    <th style={{ textAlign: 'center' }}>Status</th>
+                                    <th style={{ textAlign: 'center' }}>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {currentItems.map(c => (
                                     <tr key={c.id}>
-                                        <td>
-                                            <div className="author_cell">
-                                                {c.new && <span className="new_badge">NEW</span>}
-                                                <div className="author_info">
-                                                    <div className="user_avatar">
+                                        <td style={{ paddingLeft: '20px' }}>
+                                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                                {c.new && (
+                                                    <span style={{
+                                                        fontSize: '10px',
+                                                        fontWeight: '800',
+                                                        color: '#10b981',
+                                                        background: 'rgba(16, 185, 129, 0.1)',
+                                                        padding: '2px 6px',
+                                                        borderRadius: '4px',
+                                                        width: 'fit-content',
+                                                        marginBottom: '4px',
+                                                        letterSpacing: '1px'
+                                                    }}>NEW</span>
+                                                )}
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                                    <div style={{ padding: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '50%', color: '#94a3b8' }}>
                                                         <User size={18} />
                                                     </div>
-                                                    <div className="user_meta">
+                                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
                                                         <strong>{c.name}</strong>
-                                                        <span>{c.email}</span>
+                                                        <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>{c.email}</span>
                                                     </div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
-                                            <div className="target_story_cell">
-                                                <span className="story_title">{c.post_title}</span>
-                                                <Link to={`/posts/${c.post}`} target="_blank" className="story_link"><ExternalLink size={14} /></Link>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--primary-color)', fontSize: '0.875rem' }}>
+                                                <span style={{ maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: '600' }}>
+                                                    {c.post_title}
+                                                </span>
+                                                <Link to={`/posts/${c.post}`} target="_blank" style={{ color: 'inherit', opacity: 0.6 }}><ExternalLink size={14} /></Link>
                                             </div>
                                         </td>
-                                        <td className="snippet_cell">
-                                            <p>{c.comment}</p>
+                                        <td style={{ maxWidth: '300px' }}>
+                                            <p style={{ margin: 0, fontSize: '0.875rem', color: '#94a3b8', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                                                {c.comment}
+                                            </p>
                                         </td>
-                                        <td className="text_center">
+                                        <td style={{ textAlign: 'center' }}>
                                             <span className={`status_badge ${c.displayed ? 'publish' : 'draft'}`}>
                                                 {c.displayed ? 'Approved' : 'Hidden'}
                                             </span>
                                         </td>
-                                        <td className="action_cells">
-                                            <button
-                                                onClick={() => handleViewComment(c)}
-                                                className="action_btn view"
-                                                title="View Full Comment"
-                                            >
-                                                <Eye size={16} />
-                                            </button>
-                                            <button
-                                                onClick={() => toggleDisplay(c.id, c.displayed)}
-                                                className={`action_btn ${c.displayed ? 'hide' : 'approve'}`}
-                                                title={c.displayed ? "Hide Comment" : "Approve Comment"}
-                                            >
-                                                <Check size={16} />
-                                            </button>
-                                            <button onClick={() => handleDeleteClick(c)} className="action_btn delete" title="Delete Permanent">
-                                                <Trash2 size={16} />
-                                            </button>
+                                        <td className="action_cells" style={{ textAlign: 'center', display: 'table-cell' }}>
+                                            <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+                                                <button
+                                                    onClick={() => handleViewComment(c)}
+                                                    className="action_btn view"
+                                                    title="View Full Comment"
+                                                >
+                                                    <Eye size={16} />
+                                                </button>
+                                                <button
+                                                    onClick={() => toggleDisplay(c.id, c.displayed)}
+                                                    className="action_btn edit"
+                                                    title={c.displayed ? "Hide Comment" : "Approve Comment"}
+                                                    style={{ color: c.displayed ? '#94a3b8' : '#10b981', borderColor: c.displayed ? 'rgba(255,255,255,0.1)' : 'rgba(16, 185, 129, 0.3)' }}
+                                                >
+                                                    <Check size={16} />
+                                                </button>
+                                                <button onClick={() => handleDeleteClick(c)} className="action_btn delete" title="Delete Permanent">
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
 
-                        <footer className="admin_pagination">
+                        {filteredComments.length > COMMENTS_PER_PAGE && (
+                            <footer className="professional_pagination" style={{ padding: '40px 0', borderTop: '1px solid rgba(255, 255, 255, 0.05)', backgroundColor: 'transparent' }}>
                                 <button
-                                    className="pagination_btn"
+                                    className="pagination_nav_btn"
                                     disabled={currentPage === 1}
                                     onClick={() => paginate(currentPage - 1)}
                                 >
-                                    <ChevronLeft size={18} />
+                                    <ChevronLeft size={18} /> Previous
                                 </button>
 
-                                <div className="pagination_numbers">
+                                <div className="page_numbers_hub">
                                     {getPaginationRange().map((page, i) => (
                                         page === '...' ? (
-                                            <span key={`dots-${i}`} className="pagination_dots">...</span>
+                                            <span key={`dots-${i}`} className="pagination_dots" style={{ color: '#94a3b8', opacity: 0.5, padding: '0 8px', fontSize: '1.2rem', fontWeight: 'bold' }}>...</span>
                                         ) : (
                                             <button
                                                 key={page}
-                                                className={`pagination_num ${currentPage === page ? 'active' : ''}`}
+                                                className={`page_dot ${currentPage === page ? 'active' : ''}`}
                                                 onClick={() => paginate(page)}
                                             >
                                                 {page}
@@ -305,13 +325,14 @@ const ManageComments = () => {
                                 </div>
 
                                 <button
-                                    className="pagination_btn"
+                                    className="pagination_nav_btn"
                                     disabled={currentPage === totalPages}
                                     onClick={() => paginate(currentPage + 1)}
                                 >
-                                    <ChevronRight size={18} />
+                                    Next <ChevronRight size={18} />
                                 </button>
                             </footer>
+                        )}
                     </>
                 )}
                 {!loading && filteredComments.length === 0 && (
@@ -323,49 +344,49 @@ const ManageComments = () => {
 
             {/* View Comment Modal */}
             {showViewModal && selectedComment && (
-                <div className="admin_modal_overlay" onClick={() => setShowViewModal(false)}>
-                    <div className="admin_modal_content animation_slide_up" onClick={e => e.stopPropagation()}>
+                <div className="message_modal_overlay" onClick={() => setShowViewModal(false)}>
+                    <div className="message_modal_content animation_slide_up" onClick={e => e.stopPropagation()} style={{ maxWidth: '600px' }}>
                         <div className="modal_header">
-                            <div className="header_title">
-                                <MessageSquare size={24} className="accent_text" />
-                                <h2>Comment Details</h2>
-                            </div>
+                            <h2 style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <MessageSquare size={24} color="var(--primary-color)" /> Comment Details
+                            </h2>
                             <button className="close_btn" onClick={() => setShowViewModal(false)}><X size={20} /></button>
                         </div>
-                        <div className="modal_body">
-                            <div className="modal_user_info">
-                                <div className="avatar_large">
+                        <div className="modal_body" style={{ padding: '30px' }}>
+                            <div style={{ display: 'flex', gap: '20px', marginBottom: '30px', padding: '20px', background: 'rgba(255,255,255,0.02)', borderRadius: '15px' }}>
+                                <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: 'var(--primary-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', fontWeight: 'Bold', color: '#fff' }}>
                                     {selectedComment.name[0].toUpperCase()}
                                 </div>
-                                <div className="user_details">
-                                    <h3>{selectedComment.name}</h3>
-                                    <p>{selectedComment.email}</p>
-                                    <div className="meta_strip">
-                                        <span><Calendar size={14} /> {new Date(selectedComment.commented_date).toLocaleDateString()}</span>
-                                        <span>ID: #{selectedComment.id}</span>
+                                <div>
+                                    <h3 style={{ margin: '0 0 5px 0', fontSize: '1.2rem' }}>{selectedComment.name}</h3>
+                                    <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.9rem' }}>{selectedComment.email}</p>
+                                    <div style={{ display: 'flex', gap: '15px', marginTop: '10px', fontSize: '0.8rem', color: 'rgba(148,163,184,0.6)' }}>
+                                        <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><Calendar size={14} /> {new Date(selectedComment.commented_date).toLocaleDateString()}</span>
+                                        <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><MessageSquare size={14} /> ID: #{selectedComment.id}</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="modal_field">
-                                <label>Target Story</label>
-                                <div className="story_reference">
+                            <div style={{ marginBottom: '30px' }}>
+                                <h4 style={{ fontSize: '0.9rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '15px' }}>Target Story</h4>
+                                <div style={{ color: 'var(--primary-color)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                     {selectedComment.post_title}
-                                    <Link to={`/posts/${selectedComment.post}`} target="_blank" className="accent_text"><ExternalLink size={16} /></Link>
+                                    <Link to={`/posts/${selectedComment.post}`} target="_blank" style={{ color: 'inherit' }}><ExternalLink size={16} /></Link>
                                 </div>
                             </div>
 
-                            <div className="modal_field">
-                                <label>Comment Message</label>
-                                <div className="comment_content">
+                            <div>
+                                <h4 style={{ fontSize: '0.9rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '15px' }}>Comment Message</h4>
+                                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '25px', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.05)', lineHeight: '1.6', color: '#e2e8f0', fontSize: '1.05rem' }}>
                                     {selectedComment.comment}
                                 </div>
                             </div>
                         </div>
                         <div className="modal_footer">
                             <button
-                                className={`admin_btn_${selectedComment.displayed ? 'danger' : 'primary'}`}
+                                className="admin_btn_primary"
                                 onClick={() => { toggleDisplay(selectedComment.id, selectedComment.displayed); }}
+                                style={{ background: selectedComment.displayed ? '#ef4444' : '#10b981' }}
                             >
                                 {selectedComment.displayed ? 'Hide Comment' : 'Approve Comment'}
                             </button>
@@ -377,16 +398,33 @@ const ManageComments = () => {
 
             {/* Delete Confirmation Modal */}
             {showDeleteConfirm && commentToDelete && (
-                <div className="admin_modal_overlay" onClick={() => setShowDeleteConfirm(false)}>
-                    <div className="admin_modal_content delete_modal animation_slide_up" onClick={e => e.stopPropagation()}>
-                        <div className="modal_icon_box danger">
-                            <Trash2 size={32} />
+                <div className="message_modal_overlay" style={{ zIndex: 1100 }}>
+                    <div className="message_modal_content animation_slide_up" style={{ maxWidth: '450px', padding: '40px', textAlign: 'center' }}>
+                        <div style={{ marginBottom: '25px', color: '#ef4444' }}>
+                            <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(239, 68, 68, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+                                <Trash2 size={40} />
+                            </div>
+                            <h2 style={{ fontSize: '1.5rem', fontWeight: '800', color: '#fff' }}>Delete Comment?</h2>
+                            <p style={{ color: '#94a3b8', marginTop: '10px', fontSize: '1rem' }}>
+                                Are you sure you want to delete this comment from <strong>{commentToDelete.name}</strong>?<br/>
+                                This cannot be undone.
+                            </p>
                         </div>
-                        <h2>Delete Comment?</h2>
-                        <p>Are you sure you want to delete this comment from <strong>{commentToDelete.name}</strong>? This action cannot be undone.</p>
-                        <div className="modal_actions">
-                            <button className="admin_btn_secondary" onClick={() => setShowDeleteConfirm(false)} disabled={isDeleting}>Cancel</button>
-                            <button className="admin_btn_danger" onClick={confirmDelete} disabled={isDeleting}>
+                        <div style={{ display: 'flex', gap: '15px' }}>
+                            <button 
+                                className="admin_btn_secondary" 
+                                style={{ flex: 1, padding: '12px' }} 
+                                onClick={() => { setShowDeleteConfirm(false); setCommentToDelete(null); }}
+                                disabled={isDeleting}
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                className="admin_btn_primary" 
+                                style={{ flex: 1, padding: '12px', background: '#ef4444' }} 
+                                onClick={confirmDelete}
+                                disabled={isDeleting}
+                            >
                                 {isDeleting ? 'Deleting...' : 'Delete Permanently'}
                             </button>
                         </div>
@@ -396,8 +434,23 @@ const ManageComments = () => {
 
             {/* Success Notification */}
             {showDeleteSuccess && (
-                <div className="admin_toast success animation_slide_up">
-                    <Check size={18} /> Comment deleted successfully!
+                <div style={{ 
+                    position: 'fixed', 
+                    top: '30px', 
+                    left: '50%', 
+                    transform: 'translateX(-50%)', 
+                    background: '#10b981', 
+                    color: '#fff', 
+                    padding: '16px 32px', 
+                    borderRadius: '12px', 
+                    boxShadow: '0 10px 30px rgba(16, 185, 129, 0.3)', 
+                    zIndex: 2000,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    fontWeight: '600'
+                , animation: 'slideDownFade 0.5s ease' }}>
+                    <Plus size={20} style={{ transform: 'rotate(45deg)' }} /> Comment deleted successfully!
                 </div>
             )}
         </div>

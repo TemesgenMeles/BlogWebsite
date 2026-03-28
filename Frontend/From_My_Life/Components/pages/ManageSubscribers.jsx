@@ -133,14 +133,15 @@ const ManageSubscribers = () => {
                 </button>
             </header>
 
-            <div className="admin_table_controls">
-                <div className="search_bar">
-                    <Search size={18} className="search_icon" />
+            <div className="admin_table_controls" style={{ marginBottom: '24px', display: 'flex', gap: '16px', alignItems: 'center' }}>
+                <div className="search_bar" style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center' }}>
+                    <Search size={18} style={{ position: 'absolute', left: '16px', color: 'var(--text-muted)' }} />
                     <input
                         type="text"
                         placeholder="Filter by email address..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{ width: '100%', padding: '12px 12px 12px 48px', borderRadius: '12px', border: '1px solid var(--border-color)', fontSize: '0.875rem' }}
                     />
                 </div>
             </div>
@@ -152,40 +153,38 @@ const ManageSubscribers = () => {
                     <table className="admin_table">
                         <thead>
                             <tr>
-                                <th className="text_left pl_20">Subscriber</th>
-                                <th className="text_left">Subscription Date</th>
-                                <th className="text_center">Status</th>
-                                <th className="text_center">Actions</th>
+                                <th>Subscriber</th>
+                                <th>Subscription Date</th>
+                                <th>Status</th>
+                                <th style={{ textAlign: 'center' }}>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {currentItems.map(s => (
                                 <tr key={s.id}>
                                     <td>
-                                        <div className="author_cell">
-                                            <div className="user_avatar">
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                            <div style={{ padding: '10px', background: '#ecfdf5', borderRadius: '10px', color: '#10b981' }}>
                                                 <Mail size={18} />
                                             </div>
-                                            <div className="user_meta">
+                                            <div style={{ display: 'flex', flexDirection: 'column' }}>
                                                 <strong>{s.email}</strong>
-                                                <span>ID: #{s.id}</span>
+                                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>ID: #{s.id}</span>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="text_center">
-                                        <div className="date_cell" style={{ justifyContent: 'center' }}>
-                                            <span>
-                                                <Calendar size={14} className="text_muted" />
-                                                {new Date(s.subscribed_date).toLocaleDateString()}
-                                            </span>
+                                    <td>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.875rem' }}>
+                                            <Calendar size={14} className="text_muted" />
+                                            <span>{new Date(s.subscribed_date).toLocaleDateString()}</span>
                                         </div>
                                     </td>
-                                    <td className="text_center">
-                                        <span className="status_badge publish">
+                                    <td>
+                                        <span className="status_badge publish" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                                             <CheckCircle size={12} /> Active
                                         </span>
                                     </td>
-                                    <td className="text_center">
+                                    <td className="action_column_cell" style={{ textAlign: 'center' }}>
                                         <div className="action_cells" style={{ justifyContent: 'center' }}>
                                             <button onClick={() => handleDeleteClick(s)} className="action_btn delete" title="Unsubscribe Message">
                                                 <Trash2 size={16} />
@@ -200,23 +199,23 @@ const ManageSubscribers = () => {
 
                 {/* Professional Pagination Controls */}
                 {!loading && filteredSubscribers.length > ITEMS_PER_PAGE && (
-                    <footer className="admin_pagination">
+                    <footer className="professional_pagination" style={{ padding: '40px 0', borderTop: '1px solid rgba(255, 255, 255, 0.05)', backgroundColor: 'transparent' }}>
                         <button
-                            className="pagination_btn"
+                            className="pagination_nav_btn"
                             disabled={currentPage === 1}
                             onClick={() => paginate(currentPage - 1)}
                         >
-                            <ChevronLeft size={18} />
+                            <ChevronLeft size={18} /> Previous
                         </button>
 
-                        <div className="pagination_numbers">
+                        <div className="page_numbers_hub">
                             {getPaginationRange().map((page, i) => (
                                 page === '...' ? (
-                                    <span key={`dots-${i}`} className="pagination_dots">...</span>
+                                    <span key={`dots-${i}`} className="pagination_dots" style={{ color: '#94a3b8', opacity: 0.5, padding: '0 8px', fontSize: '1.2rem', fontWeight: 'bold' }}>...</span>
                                 ) : (
                                     <button
                                         key={page}
-                                        className={`pagination_num ${currentPage === page ? 'active' : ''}`}
+                                        className={`page_dot ${currentPage === page ? 'active' : ''}`}
                                         onClick={() => paginate(page)}
                                     >
                                         {page}
@@ -226,11 +225,11 @@ const ManageSubscribers = () => {
                         </div>
 
                         <button
-                            className="pagination_btn"
+                            className="pagination_nav_btn"
                             disabled={currentPage === totalPages}
                             onClick={() => paginate(currentPage + 1)}
                         >
-                            <ChevronRight size={18} />
+                            Next <ChevronRight size={18} />
                         </button>
                     </footer>
                 )}
@@ -244,16 +243,33 @@ const ManageSubscribers = () => {
 
             {/* Delete Confirmation Modal */}
             {showDeleteConfirm && subscriberToDelete && (
-                <div className="admin_modal_overlay" onClick={() => setShowDeleteConfirm(false)}>
-                    <div className="admin_modal_content delete_modal animation_slide_up" onClick={e => e.stopPropagation()}>
-                        <div className="modal_icon_box danger">
-                            <Trash2 size={32} />
+                <div className="message_modal_overlay" style={{ zIndex: 1100 }}>
+                    <div className="message_modal_content animation_slide_up" style={{ maxWidth: '450px', padding: '40px', textAlign: 'center' }}>
+                        <div style={{ marginBottom: '25px', color: '#ef4444' }}>
+                            <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(239, 68, 68, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+                                <Trash2 size={40} />
+                            </div>
+                            <h2 style={{ fontSize: '1.5rem', fontWeight: '800', color: '#fff' }}>Remove Subscriber?</h2>
+                            <p style={{ color: '#94a3b8', marginTop: '10px', fontSize: '1rem' }}>
+                                Are you sure you want to remove <strong>{subscriberToDelete.email}</strong> from the newsletter?<br />
+                                This cannot be undone.
+                            </p>
                         </div>
-                        <h2>Remove Subscriber?</h2>
-                        <p>Are you sure you want to remove <strong>{subscriberToDelete.email}</strong> from the newsletter? This action cannot be undone.</p>
-                        <div className="modal_actions">
-                            <button className="admin_btn_secondary" onClick={() => setShowDeleteConfirm(false)} disabled={isDeleting}>Cancel</button>
-                            <button className="admin_btn_danger" onClick={confirmDelete} disabled={isDeleting}>
+                        <div style={{ display: 'flex', gap: '15px' }}>
+                            <button
+                                className="admin_btn_secondary"
+                                style={{ flex: 1, padding: '12px' }}
+                                onClick={() => { setShowDeleteConfirm(false); setSubscriberToDelete(null); }}
+                                disabled={isDeleting}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className="admin_btn_primary"
+                                style={{ flex: 1, padding: '12px', background: '#ef4444' }}
+                                onClick={confirmDelete}
+                                disabled={isDeleting}
+                            >
                                 {isDeleting ? 'Removing...' : 'Remove Permanently'}
                             </button>
                         </div>
@@ -263,8 +279,24 @@ const ManageSubscribers = () => {
 
             {/* Success Notification */}
             {showDeleteSuccess && (
-                <div className="admin_toast success animation_slide_up">
-                    <Check size={18} /> Subscriber removed successfully!
+                <div style={{
+                    position: 'fixed',
+                    top: '30px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: '#10b981',
+                    color: '#fff',
+                    padding: '16px 32px',
+                    borderRadius: '12px',
+                    boxShadow: '0 10px 30px rgba(16, 185, 129, 0.3)',
+                    zIndex: 2000,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    fontWeight: '600'
+                    , animation: 'slideDownFade 0.5s ease'
+                }}>
+                    <Plus size={20} style={{ transform: 'rotate(45deg)' }} /> Subscriber removed successfully!
                 </div>
             )}
         </div>

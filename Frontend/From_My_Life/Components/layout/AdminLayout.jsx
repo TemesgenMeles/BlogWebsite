@@ -1,14 +1,15 @@
-import { Outlet, NavLink } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import '../../src/Admin.css';
-import { LayoutDashboard, Users, FileText, Settings, LogOut, Sun, Moon, Bell, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, Users, FileText, Settings, LogOut, Sun, Moon, Bell, ChevronRight, Folder, MessageSquare, Mail, Eye, Shield } from 'lucide-react';
 import { useState, useEffect, useRef, useContext } from 'react';
 import AuthContext from '../../src/context/AuthContext';
 
 const AdminLayout = () => {
-    const { logoutUser } = useContext(AuthContext);
+    const { user, logoutUser } = useContext(AuthContext);
     const [notifications, setNotifications] = useState([]);
     const [showNotifications, setShowNotifications] = useState(false);
     const notificationRef = useRef(null);
+    const navigate = useNavigate();
 
     const fetchNotifications = async () => {
         try {
@@ -27,7 +28,7 @@ const AdminLayout = () => {
                     sender: m.name,
                     content: m.subject,
                     date: m.message_date,
-                    path: '/admin/messages'
+                    path: `/admin/messages?view=${m.id}`
                 })),
                 ...comments.filter(c => c.new).map(c => ({
                     id: c.id,
@@ -79,11 +80,17 @@ const AdminLayout = () => {
         }
     };
 
+    const handleNotificationClick = (notif) => {
+        markAsRead(notif.id, notif.type);
+        setShowNotifications(false);
+        navigate(notif.path);
+    };
+
     return (
         <div className="admin_container">
             <aside className="admin_sidebar">
                 <div className="admin_logo">
-                    <img src="/logo_green.png" alt="Admin Logo" />
+                    <img src="/logo_green.png" alt="Admin Logo" style={{ height: '60px', width: 'auto' }} />
                 </div>
                 <nav className="admin_nav">
                     <ul className="admin_nav_list">
@@ -118,8 +125,8 @@ const AdminLayout = () => {
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink to="/admin/users" className={({ isActive }) => isActive ? 'admin_active' : ''}>
-                                <Users size={20} /> Manage Users
+                            <NavLink to="/admin/users" className={({ isActive }) => `nav_link ${isActive ? 'active' : ''}`}>
+                                <Shield size={20} /> User Directory
                             </NavLink>
                         </li>
                         <li>
@@ -130,17 +137,25 @@ const AdminLayout = () => {
                     </ul>
                 </nav>
                 <div className="admin_footer_nav">
-                    <NavLink to="/">
-                        <LayoutDashboard size={20} /> Back to Site
-                    </NavLink>
                     <button onClick={logoutUser} className="admin_logout_btn">
                         <LogOut size={20} /> Logout
                     </button>
+                    <NavLink to="/">
+                        <Eye size={20} /> View Site
+                    </NavLink>
                 </div>
             </aside>
             <main className="admin_main_content">
                 <header className="admin_topbar">
-                    <div className="admin_notifications" ref={notificationRef} onClick={() => setShowNotifications(!showNotifications)}>
+                    <NavLink to="/admin" className="topbar_logo_link">
+                        <img src="/logo_green.png" alt="Dashboard Home" style={{ height: '45px', width: 'auto' }} />
+                    </NavLink>
+                    <div style={{ flex: 1 }}></div>
+                    <div
+                        className="admin_notifications"
+                        ref={notificationRef}
+                        onClick={() => setShowNotifications(!showNotifications)}
+                    >
                         <Bell size={20} />
                         {notifications.length > 0 && (
                             <span className="notification_badge">
@@ -157,23 +172,21 @@ const AdminLayout = () => {
                                 <div className="notification_list">
                                     {notifications.length > 0 ? (
                                         notifications.map((notif, idx) => (
-                                            <div key={`${notif.type}-${notif.id}`} className="notification_item">
+                                            <div 
+                                                key={`${notif.type}-${notif.id}`} 
+                                                className="notification_item"
+                                                onClick={() => handleNotificationClick(notif)}
+                                                style={{ cursor: 'pointer' }}
+                                            >
                                                 <span className="notif_sender">{notif.sender}</span>
                                                 <p className="notif_content">{notif.content}</p>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
                                                     <span className="notif_type_label">{notif.type === 'message' ? 'Message' : 'Comment'}</span>
                                                     <span style={{ fontSize: '0.65rem', opacity: 0.4 }}>• {new Date(notif.date).toLocaleDateString()}</span>
                                                 </div>
-                                                <NavLink
-                                                    to={notif.path}
-                                                    className="notif_action_btn"
-                                                    onClick={() => {
-                                                        markAsRead(notif.id, notif.type);
-                                                        setShowNotifications(false);
-                                                    }}
-                                                >
+                                                <div className="notif_action_btn">
                                                     <ChevronRight size={16} />
-                                                </NavLink>
+                                                </div>
                                             </div>
                                         ))
                                     ) : (
@@ -186,7 +199,7 @@ const AdminLayout = () => {
                         )}
                     </div>
                     <div className="admin_topbar_user">
-                        <span>Admin Dashboard</span>
+                        <span>Welcome, {user?.username || 'Admin'}</span>
                     </div>
                 </header>
                 <div className="admin_content_area">

@@ -76,37 +76,42 @@ const ManageCategories = () => {
             </header>
 
             {isEditing && (
-                <div className="admin_edit_section animation_slide_up">
-                    <div className="section_header">
-                        <div className="header_title">
-                            <Edit2 size={24} className="accent_text" />
-                            <h2>Edit Category: <span>{formData.name}</span></h2>
-                        </div>
-                        <button onClick={resetForm} className="close_btn"><X size={20} /></button>
+                <div className="admin_recent_section mb_lg animation_slide_up" style={{ marginBottom: '32px', background: 'rgba(70, 200, 85, 0.05)', borderRadius: '20px', border: '1px solid rgba(70, 200, 85, 0.1)', padding: '30px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
+                        <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.4rem' }}>
+                            <Edit2 size={24} color="var(--primary-color)" /> Edit Category: <span style={{ color: 'var(--primary-color)' }}>{formData.name}</span>
+                        </h2>
+                        <button onClick={resetForm} className="close_btn" style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '10px', padding: '8px' }}><X size={20} /></button>
                     </div>
-                    <form onSubmit={handleSubmit} className="admin_form_inline">
-                        <div className="form_group">
-                            <label>Category Name</label>
+                    <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr auto', gap: '20px', alignItems: 'end' }}>
+                        <div className="form_group" style={{ marginBottom: 0 }}>
+                            <label style={{ display: 'block', marginBottom: '10px', fontWeight: '600', fontSize: '0.9rem', color: '#94a3b8' }}>Category Name</label>
                             <input 
                                 type="text" 
                                 placeholder="e.g. Technology" 
                                 value={formData.name}
                                 onChange={(e) => setFormData({...formData, name: e.target.value})}
                                 required
+                                style={{ width: '100%', padding: '12px 16px', borderRadius: '12px' }}
                             />
                         </div>
-                        <div className="form_group">
-                            <label>Description</label>
+                        <div className="form_group" style={{ marginBottom: 0 }}>
+                            <label style={{ display: 'block', marginBottom: '10px', fontWeight: '600', fontSize: '0.9rem', color: '#94a3b8' }}>Description</label>
                             <input 
                                 type="text" 
                                 placeholder="Brief summary of this category" 
                                 value={formData.discription}
                                 onChange={(e) => setFormData({...formData, discription: e.target.value})}
+                                style={{ width: '100%', padding: '12px 16px', borderRadius: '12px' }}
                             />
                         </div>
                         <div className="form_actions">
-                            <button type="submit" className="admin_btn_primary" disabled={isUpdating}>
-                                {isUpdating ? 'Synchronizing...' : 'Update Category'}
+                            <button type="submit" className="admin_btn_primary" style={{ padding: '12px 24px' }} disabled={isUpdating}>
+                                {isUpdating ? (
+                                    <>Synchronizing...</>
+                                ) : (
+                                    <><Check size={18} /> Update Category</>
+                                )}
                             </button>
                         </div>
                     </form>
@@ -120,29 +125,31 @@ const ManageCategories = () => {
                     <table className="admin_table">
                         <thead>
                             <tr>
-                                <th className="text_left pl_20">Category</th>
-                                <th className="text_left">Slug Identifier</th>
-                                <th className="text_left">Description</th>
-                                <th className="text_center">Actions</th>
+                                <th style={{ textAlign: 'left', paddingLeft: '20px' }}>Category</th>
+                                <th style={{ textAlign: 'left' }}>Slug Identifier</th>
+                                <th style={{ textAlign: 'left' }}>Description</th>
+                                <th style={{ textAlign: 'center' }}>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {categories.map(cat => (
                                 <tr key={cat.id}>
-                                    <td>
-                                        <div className="category_name_cell">
-                                            <div className={`cat_icon badge_${cat.slug || 'insight'}`}>
+                                    <td style={{ paddingLeft: '20px' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                            <div className={`table_badge_cat badge_${cat.slug || 'insight'}`} style={{ padding: '8px' }}>
                                                 <Tag size={16} />
                                             </div>
                                             <strong>{cat.name}</strong>
                                         </div>
                                     </td>
-                                    <td><code className="admin_code">{cat.slug}</code></td>
-                                    <td className="desc_cell">{cat.discription || 'No description provided.'}</td>
-                                    <td className="action_cells">
-                                        <button onClick={() => startEdit(cat)} className="action_btn edit" title="Edit Category">
-                                            <Edit2 size={16} />
-                                        </button>
+                                    <td><code style={{ background: 'rgba(255,255,255,0.05)', padding: '4px 8px', borderRadius: '6px', fontSize: '0.85rem', color: '#94a3b8', border: '1px solid rgba(255,255,255,0.05)' }}>{cat.slug}</code></td>
+                                    <td style={{ color: '#94a3b8', fontSize: '0.9rem' }}>{cat.discription || 'No description provided.'}</td>
+                                    <td className="action_cells" style={{ textAlign: 'center', display: 'table-cell' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                            <button onClick={() => startEdit(cat)} className="action_btn edit" title="Edit Category" style={{ padding: '10px' }}>
+                                                <Edit2 size={16} />
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
@@ -153,8 +160,23 @@ const ManageCategories = () => {
 
             {/* Success Toast */}
             {showSuccess && (
-                <div className="admin_toast success animation_slide_up">
-                    <Check size={18} /> Category updated successfully!
+                <div style={{ 
+                    position: 'fixed', 
+                    top: '30px', 
+                    left: '50%', 
+                    transform: 'translateX(-50%)', 
+                    background: '#10b981', 
+                    color: '#fff', 
+                    padding: '16px 32px', 
+                    borderRadius: '12px', 
+                    boxShadow: '0 10px 30px rgba(16, 185, 129, 0.3)', 
+                    zIndex: 2000,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    fontWeight: '600'
+                }}>
+                    <Check size={20} /> Category updated successfully!
                 </div>
             )}
         </div>

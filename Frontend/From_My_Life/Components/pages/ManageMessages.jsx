@@ -159,42 +159,57 @@ const ManageMessages = () => {
                     <table className="admin_table">
                         <thead>
                             <tr>
-                                <th className="text_left pl_20">Sender</th>
-                                <th className="text_left">Subject</th>
-                                <th className="text_center">Received</th>
-                                <th className="text_center">Status</th>
-                                <th className="text_center">Actions</th>
+                                <th>Sender</th>
+                                <th>Subject</th>
+                                <th>Received</th>
+                                <th>Status</th>
+                                <th style={{ textAlign: 'center' }}>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {currentItems.map(m => (
-                                <tr key={m.id} className={m.new ? 'row_unread' : ''}>
+                                <tr key={m.id}>
                                     <td>
-                                        <div className="author_cell">
-                                            <div className={`user_avatar ${m.new ? 'unread' : ''}`}>
-                                                <User size={18} />
-                                            </div>
-                                            <div className="user_meta">
-                                                <strong>{m.name}</strong>
-                                                <span>{m.email}</span>
+                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                            {m.new && (
+                                                <span style={{
+                                                    fontSize: '10px',
+                                                    fontWeight: '800',
+                                                    color: '#10b981',
+                                                    background: 'rgba(16, 185, 129, 0.1)',
+                                                    padding: '2px 6px',
+                                                    borderRadius: '4px',
+                                                    width: 'fit-content',
+                                                    marginBottom: '4px',
+                                                    letterSpacing: '1px'
+                                                }}>NEW</span>
+                                            )}
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                                <div style={{ padding: '8px', background: m.new ? '#ecfdf5' : '#f1f5f9', borderRadius: '50%', color: m.new ? '#10b981' : '#64748b' }}>
+                                                    <User size={18} />
+                                                </div>
+                                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                                    <strong>{m.name}</strong>
+                                                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{m.email}</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="subject_cell">
-                                        <span className={m.new ? 'font_bold' : ''}>{m.subject}</span>
+                                    <td>
+                                        <span style={{ fontWeight: m.new ? '700' : '500' }}>{m.subject}</span>
                                     </td>
-                                    <td className="text_center">
-                                        <div className="date_cell" style={{ justifyContent: 'center' }}>
+                                    <td>
+                                        <div style={{ display: 'flex', flexDirection: 'column', fontSize: '0.875rem' }}>
                                             <span>{new Date(m.message_date).toLocaleDateString()}</span>
-                                            <span className="time_meta">{new Date(m.message_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{new Date(m.message_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                         </div>
                                     </td>
-                                    <td className="text_center">
-                                        <span className={`status_badge ${m.new ? 'draft' : 'publish'}`}>
+                                    <td>
+                                        <span className={`status_badge ${m.new ? 'draft' : 'approved'}`} style={{ color: m.new ? '#9b1c1c' : '#03543f', background: m.new ? '#fee2e2' : '#def7ec' }}>
                                             {m.new ? 'New Inquiry' : 'Reviewed'}
                                         </span>
                                     </td>
-                                    <td className="text_center">
+                                    <td className="action_column_cell" style={{ textAlign: 'center' }}>
                                         <div className="action_cells" style={{ justifyContent: 'center' }}>
                                             <button onClick={() => handleView(m)} className="action_btn view" title="Detailed View">
                                                 <Eye size={16} />
@@ -212,23 +227,23 @@ const ManageMessages = () => {
 
                 {/* Professional Pagination Controls */}
                 {!loading && messages.length > MESSAGES_PER_PAGE && (
-                    <footer className="admin_pagination">
+                    <footer className="professional_pagination" style={{ padding: '40px 0', borderTop: '1px solid rgba(255, 255, 255, 0.05)', backgroundColor: 'transparent' }}>
                         <button
-                            className="pagination_btn"
+                            className="pagination_nav_btn"
                             disabled={currentPage === 1}
                             onClick={() => paginate(currentPage - 1)}
                         >
-                            <ChevronLeft size={18} />
+                            <ChevronLeft size={18} /> Previous
                         </button>
 
-                        <div className="pagination_numbers">
+                        <div className="page_numbers_hub">
                             {getPaginationRange().map((page, i) => (
                                 page === '...' ? (
-                                    <span key={`dots-${i}`} className="pagination_dots">...</span>
+                                    <span key={`dots-${i}`} className="pagination_dots" style={{ color: '#94a3b8', opacity: 0.5, padding: '0 8px', fontSize: '1.2rem', fontWeight: 'bold' }}>...</span>
                                 ) : (
                                     <button
                                         key={page}
-                                        className={`pagination_num ${currentPage === page ? 'active' : ''}`}
+                                        className={`page_dot ${currentPage === page ? 'active' : ''}`}
                                         onClick={() => paginate(page)}
                                     >
                                         {page}
@@ -238,11 +253,11 @@ const ManageMessages = () => {
                         </div>
 
                         <button
-                            className="pagination_btn"
+                            className="pagination_nav_btn"
                             disabled={currentPage === totalPages}
                             onClick={() => paginate(currentPage + 1)}
                         >
-                            <ChevronRight size={18} />
+                            Next <ChevronRight size={18} />
                         </button>
                     </footer>
                 )}
@@ -255,42 +270,33 @@ const ManageMessages = () => {
             </div>
 
             {selectedMessage && (
-                <div className="admin_modal_overlay" onClick={() => setSelectedMessage(null)}>
-                    <div className="admin_modal_content animation_slide_up" onClick={e => e.stopPropagation()}>
+                <div className="message_modal_overlay animation_fade_in">
+                    <div className="message_modal_content animation_slide_up">
                         <header className="modal_header">
-                            <div className="header_title">
-                                <Mail size={24} className="accent_text" />
-                                <h2>{selectedMessage.subject}</h2>
+                            <div>
+                                <h3 style={{ margin: 0, fontSize: '1.25rem' }}>{selectedMessage.subject}</h3>
+                                <div style={{ display: 'flex', gap: '16px', marginTop: '8px', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+                                    <span><User size={14} /> {selectedMessage.name}</span>
+                                    <span><Mail size={14} /> {selectedMessage.email}</span>
+                                </div>
                             </div>
-                            <button onClick={() => setSelectedMessage(null)} className="close_btn">
+                            <button onClick={() => setSelectedMessage(null)} className="action_btn">
                                 <X size={20} />
                             </button>
                         </header>
                         <div className="modal_body">
-                            <div className="modal_user_info">
-                                <div className="avatar_large">
-                                    {selectedMessage.name[0].toUpperCase()}
-                                </div>
-                                <div className="user_details">
-                                    <h3>{selectedMessage.name}</h3>
-                                    <p>{selectedMessage.email}</p>
-                                    <div className="meta_strip">
-                                        <span><Clock size={14} /> Sent on {new Date(selectedMessage.message_date).toLocaleString()}</span>
-                                    </div>
-                                </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: '20px' }}>
+                                <Clock size={14} /> Sent on {new Date(selectedMessage.message_date).toLocaleString()}
                             </div>
-                            <div className="modal_field">
-                                <label>Message Content</label>
-                                <div className="comment_content">
-                                    {selectedMessage.message}
-                                </div>
+                            <div style={{ background: 'transparent', padding: '24px', borderRadius: '12px', border: '1px solid #e2e8f0', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
+                                {selectedMessage.message}
                             </div>
                         </div>
                         <footer className="modal_footer">
                             <button onClick={() => handleDeleteClick(selectedMessage)} className="admin_btn_danger">
                                 <Trash2 size={18} /> Delete
                             </button>
-                            <a href={`mailto:${selectedMessage.email}`} className="admin_btn_primary link_btn">
+                            <a href={`mailto:${selectedMessage.email}`} className="admin_btn_primary">
                                 <Send size={18} /> Reply via Email
                             </a>
                         </footer>
@@ -300,16 +306,33 @@ const ManageMessages = () => {
 
             {/* Delete Confirmation Modal */}
             {showDeleteConfirm && messageToDelete && (
-                <div className="admin_modal_overlay" onClick={() => setShowDeleteConfirm(false)}>
-                    <div className="admin_modal_content delete_modal animation_slide_up" onClick={e => e.stopPropagation()}>
-                        <div className="modal_icon_box danger">
-                            <Trash2 size={32} />
+                <div className="message_modal_overlay" style={{ zIndex: 1100 }}>
+                    <div className="message_modal_content animation_slide_up" style={{ maxWidth: '450px', padding: '40px', textAlign: 'center' }}>
+                        <div style={{ marginBottom: '25px', color: '#ef4444' }}>
+                            <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(239, 68, 68, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+                                <Trash2 size={40} />
+                            </div>
+                            <h2 style={{ fontSize: '1.5rem', fontWeight: '800', color: '#fff' }}>Delete Message?</h2>
+                            <p style={{ color: '#94a3b8', marginTop: '10px', fontSize: '1rem' }}>
+                                Are you sure you want to delete this message from <strong>{messageToDelete.name}</strong>?<br />
+                                This cannot be undone.
+                            </p>
                         </div>
-                        <h2>Delete Message?</h2>
-                        <p>Are you sure you want to delete this message from <strong>{messageToDelete.name}</strong>? This action cannot be undone.</p>
-                        <div className="modal_actions">
-                            <button className="admin_btn_secondary" onClick={() => setShowDeleteConfirm(false)} disabled={isDeleting}>Cancel</button>
-                            <button className="admin_btn_danger" onClick={confirmDelete} disabled={isDeleting}>
+                        <div style={{ display: 'flex', gap: '15px' }}>
+                            <button
+                                className="admin_btn_secondary"
+                                style={{ flex: 1, padding: '12px' }}
+                                onClick={() => { setShowDeleteConfirm(false); setMessageToDelete(null); }}
+                                disabled={isDeleting}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className="admin_btn_primary"
+                                style={{ flex: 1, padding: '12px', background: '#ef4444' }}
+                                onClick={confirmDelete}
+                                disabled={isDeleting}
+                            >
                                 {isDeleting ? 'Deleting...' : 'Delete Permanently'}
                             </button>
                         </div>
@@ -319,8 +342,24 @@ const ManageMessages = () => {
 
             {/* Success Notification */}
             {showDeleteSuccess && (
-                <div className="admin_toast success animation_slide_up">
-                    <Check size={18} /> Message deleted successfully!
+                <div style={{
+                    position: 'fixed',
+                    top: '30px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: '#10b981',
+                    color: '#fff',
+                    padding: '16px 32px',
+                    borderRadius: '12px',
+                    boxShadow: '0 10px 30px rgba(16, 185, 129, 0.3)',
+                    zIndex: 2000,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    fontWeight: '600'
+                    , animation: 'slideDownFade 0.5s ease'
+                }}>
+                    <Plus size={20} style={{ transform: 'rotate(45deg)' }} /> Message deleted successfully!
                 </div>
             )}
         </div>
