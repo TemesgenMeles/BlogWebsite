@@ -797,10 +797,16 @@
     padding: 12px 20px;
     font-size: 1.1rem;
     border-radius: 5px;
-    border: none;
+    border: 2px solid transparent;
+    /* Match button border for height alignment */
     width: 60%;
     max-width: 300px;
     font-family: 'Outfit', sans-serif;
+    outline: none;
+}
+
+.newsletter_form input:focus {
+    border-color: var(--primary-color);
 }
 
 .newsletter_form button {
@@ -957,6 +963,10 @@
     border: 1px solid var(--primary-color, #10b981);
     box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
     background-color: rgba(255, 255, 255, 0.05);
+}
+
+.btn_home_sub {
+    height: 49px;
 }
 
 /* Enhancing category card visuals */

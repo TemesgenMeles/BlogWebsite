@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import {
     Calendar, BookOpen, Clock, Mail, ChevronRight, ChevronLeft,
     SearchX, TrendingUp, Facebook, Twitter, Linkedin, Github,
@@ -12,7 +12,10 @@ const Posts = () => {
     const [popularPosts, setPopularPosts] = useState([])
     const [loading, setLoading] = useState(true)
     const [searchQuery, setSearchQuery] = useState('')
-    const [selectedCategory, setSelectedCategory] = useState('All')
+
+    const [searchParams, setSearchParams] = useSearchParams()
+    const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'All')
+
     const [currentPage, setCurrentPage] = useState(1)
     const [newsletterEmail, setNewsletterEmail] = useState('')
     const [newsletterStatus, setNewsletterStatus] = useState('')
@@ -90,9 +93,24 @@ const Posts = () => {
         window.scrollTo(0, 0);
     }, [])
 
+    // Sync selectedCategory to URL changes (like when clicking a categories link on home page)
+    useEffect(() => {
+        const cat = searchParams.get('category') || 'All';
+        setSelectedCategory(cat);
+    }, [searchParams]);
+
     useEffect(() => {
         fetchPosts(selectedCategory);
     }, [selectedCategory])
+
+    const handleCategoryClick = (category) => {
+        if (category === 'All') {
+            searchParams.delete('category');
+        } else {
+            searchParams.set('category', category);
+        }
+        setSearchParams(searchParams);
+    };
 
     const filteredPosts = posts.filter(post => {
         const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -168,7 +186,7 @@ const Posts = () => {
                     <div className="filter_bar">
                         <button
                             className={`filter_chip ${selectedCategory === 'All' ? 'active' : ''}`}
-                            onClick={() => setSelectedCategory('All')}
+                            onClick={() => handleCategoryClick('All')}
                         >
                             All Stories
                         </button>
@@ -176,7 +194,7 @@ const Posts = () => {
                             <button
                                 key={cat.id}
                                 className={`filter_chip ${selectedCategory === cat.slug ? 'active' : ''}`}
-                                onClick={() => setSelectedCategory(cat.slug)}
+                                onClick={() => handleCategoryClick(cat.slug)}
                             >
                                 {cat.name}
                             </button>

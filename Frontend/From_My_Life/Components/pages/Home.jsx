@@ -47,6 +47,12 @@ const Home = () => {
         }
     };
 
+    const latestPostsRef = React.useRef(null);
+
+    const scrollToLatest = () => {
+        latestPostsRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
+
     useEffect(() => {
         const fetchPosts = async () => {
             try {
@@ -73,11 +79,11 @@ const Home = () => {
                     <p className="part_logo">Stories, lessons, and reflections worth sharing.</p>
                     <p className="intro">I’m Temesgen, sharing my thoughts, experiences, and lessons learned along the way.</p>
                 </div>
-                <button className="flex_center gap_sm">Get Started <ArrowRight size={20} /></button>
+                <button onClick={scrollToLatest} className="flex_center gap_sm">Get Started <ArrowRight size={20} /></button>
             </header>
 
             {/* Latest Posts Preview */}
-            <section className="leatest_post">
+            <section ref={latestPostsRef} className="leatest_post" id="latest-posts">
                 <h1 className="title">Latest Posts</h1>
                 <p className="phrase">Catch up on my newest reflections and experiences.</p>
                 <div className="posts_container">
@@ -129,27 +135,27 @@ const Home = () => {
             <section className="categories_section">
                 <h2 className="section_title">Explore Topics</h2>
                 <div className="categories_grid">
-                    <Link to="/category/showcase" className="category_card shadow_showcase">
+                    <Link to="/posts?category=showcase" className="category_card shadow_showcase">
                         <MonitorPlay size={40} className="category_icon mb-3" style={{ color: 'var(--cat-showcase)' }} />
                         <h3 style={{ color: 'var(--cat-showcase)' }}>Showcase</h3>
                         <p>A deeper dive into my best projects, highlighting key features, tech stacks, and the challenges overcome during development.</p>
                     </Link>
-                    <Link to="/category/education" className="category_card shadow_education">
+                    <Link to="/posts?category=education" className="category_card shadow_education">
                         <BookOpen size={40} className="category_icon mb-3" style={{ color: 'var(--cat-education)' }} />
                         <h3 style={{ color: 'var(--cat-education)' }}>Education</h3>
                         <p>Tutorials, continuous learning resources, and guides designed to help you level up your programming and web design skills.</p>
                     </Link>
-                    <Link to="/category/business" className="category_card shadow_business">
+                    <Link to="/posts?category=business" className="category_card shadow_business">
                         <BookOpen size={40} className="category_icon mb-3" style={{ color: 'var(--cat-business)' }} />
                         <h3 style={{ color: 'var(--cat-business)' }}>Business</h3>
                         <p>Insights on entrepreneurship, navigating the market, and exploring modern business strategies for independent creators.</p>
                     </Link>
-                    <Link to="/category/insight" className="category_card shadow_insight">
+                    <Link to="/posts?category=insight" className="category_card shadow_insight">
                         <Search size={40} className="category_icon mb-3" style={{ color: 'var(--cat-insight)' }} />
                         <h3 style={{ color: 'var(--cat-insight)' }}>Insight</h3>
                         <p>Deep dives into thought-provoking topics, analyzing trends in technology, and sharing meaningful takeaways and opinions.</p>
                     </Link>
-                    <Link to="/category/lifestyle" className="category_card shadow_lifestyle">
+                    <Link to="/posts?category=lifestyle" className="category_card shadow_lifestyle">
                         <Coffee size={40} className="category_icon mb-3" style={{ color: 'var(--cat-lifestyle)' }} />
                         <h3 style={{ color: 'var(--cat-lifestyle)' }}>Lifestyle</h3>
                         <p>Reflections on building better habits, fostering productivity, avoiding burnout, and balancing a tech life with personal well-being.</p>
@@ -173,7 +179,7 @@ const Home = () => {
                                 required
                             />
                         </div>
-                        <button type="submit" disabled={newsletterStatus === 'subscribing'} className="btn_primary flex_center gap_sm">
+                        <button type="submit" disabled={newsletterStatus === 'subscribing'} className="btn_primary flex_center gap_sm btn_home_sub">
                             {newsletterStatus === 'subscribing' ? 'Subscribing...' : 'Subscribe'} <ChevronRight size={20} />
                         </button>
                     </form>
@@ -207,11 +213,11 @@ const Home = () => {
                     <div className="footer_links_group">
                         <h4>Topics</h4>
                         <div className="footer_links">
-                            <Link to="/category/showcase" className="flex_center gap_xs"><MonitorPlay size={16} /> Showcase</Link>
-                            <Link to="/category/education" className="flex_center gap_xs"><BookOpen size={16} /> Education</Link>
-                            <Link to="/category/business" className="flex_center gap_xs"><BookOpen size={16} /> Business</Link>
-                            <Link to="/category/insight" className="flex_center gap_xs"><Search size={16} /> Insight</Link>
-                            <Link to="/category/lifestyle" className="flex_center gap_xs"><Coffee size={16} /> Lifestyle</Link>
+                            <Link to="/posts?category=showcase" className="flex_center gap_xs"><MonitorPlay size={16} /> Showcase</Link>
+                            <Link to="/posts?category=education" className="flex_center gap_xs"><BookOpen size={16} /> Education</Link>
+                            <Link to="/posts?category=business" className="flex_center gap_xs"><BookOpen size={16} /> Business</Link>
+                            <Link to="/posts?category=insight" className="flex_center gap_xs"><Search size={16} /> Insight</Link>
+                            <Link to="/posts?category=lifestyle" className="flex_center gap_xs"><Coffee size={16} /> Lifestyle</Link>
                         </div>
                     </div>
                 </div>

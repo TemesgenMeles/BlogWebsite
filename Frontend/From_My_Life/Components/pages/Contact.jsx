@@ -25,22 +25,22 @@ const Contact = () => {
     e.preventDefault();
     setSubmitStatus('submitting');
     try {
-        const response = await fetch('http://127.0.0.1:8000/posts/contact-message/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData),
-        });
-        
-        if (response.ok) {
-            setSubmitStatus('success');
-            setFormData({ name: '', email: '', subject: '', message: '' });
-            setTimeout(() => setSubmitStatus(''), 5000);
-        } else {
-            setSubmitStatus('error');
-        }
-    } catch (error) {
-        console.error('Error submitting message:', error);
+      const response = await fetch('http://127.0.0.1:8000/posts/contact-message/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setSubmitStatus('success');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+        setTimeout(() => setSubmitStatus(''), 5000);
+      } else {
         setSubmitStatus('error');
+      }
+    } catch (error) {
+      console.error('Error submitting message:', error);
+      setSubmitStatus('error');
     }
   };
 
@@ -128,19 +128,19 @@ const Contact = () => {
             <form onSubmit={handleSubmit} className="premium_contact_form">
               <div className="form_group">
                 <label htmlFor="name">Full Name</label>
-                <input type="text" id="name" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="Example: Temesgen Meles" required />
+                <input type="text" id="name" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} placeholder="Example: Temesgen Meles" required />
               </div>
               <div className="form_group">
                 <label htmlFor="email">Email Address</label>
-                <input type="email" id="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} placeholder="Example: teme@gmail.com" required />
+                <input type="email" id="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} placeholder="Example: teme@gmail.com" required />
               </div>
               <div className="form_group">
                 <label htmlFor="subject">Subject</label>
-                <input type="text" id="subject" value={formData.subject} onChange={e => setFormData({...formData, subject: e.target.value})} placeholder="Feedback / Inquiry" required />
+                <input type="text" id="subject" value={formData.subject} onChange={e => setFormData({ ...formData, subject: e.target.value })} placeholder="Feedback / Inquiry" required />
               </div>
               <div className="form_group">
                 <label htmlFor="message">Your Message</label>
-                <textarea id="message" rows="5" value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} placeholder="Write your message here..." required></textarea>
+                <textarea id="message" rows="5" value={formData.message} onChange={e => setFormData({ ...formData, message: e.target.value })} placeholder="Write your message here..." required></textarea>
               </div>
               <button type="submit" disabled={submitStatus === 'submitting'} className="btn_primary btn_full">
                 <span>{submitStatus === 'submitting' ? 'Sending...' : 'Send Message'}</span>
@@ -197,11 +197,11 @@ const Contact = () => {
           <div className="footer_links_group">
             <h4>Topics</h4>
             <div className="footer_links">
-              <Link to="/category/showcase" className="flex_center gap_xs"><MonitorPlay size={16} /> Showcase</Link>
-              <Link to="/category/education" className="flex_center gap_xs"><BookOpen size={16} /> Education</Link>
-              <Link to="/category/business" className="flex_center gap_xs"><BookOpen size={16} /> Business</Link>
-              <Link to="/category/insight" className="flex_center gap_xs"><Search size={16} /> Insight</Link>
-              <Link to="/category/lifestyle" className="flex_center gap_xs"><Coffee size={16} /> Lifestyle</Link>
+              <Link to="/posts?category=showcase" className="flex_center gap_xs"><MonitorPlay size={16} /> Showcase</Link>
+              <Link to="/posts?category=education" className="flex_center gap_xs"><BookOpen size={16} /> Education</Link>
+              <Link to="/posts?category=business" className="flex_center gap_xs"><BookOpen size={16} /> Business</Link>
+              <Link to="/posts?category=insight" className="flex_center gap_xs"><Search size={16} /> Insight</Link>
+              <Link to="/posts?category=lifestyle" className="flex_center gap_xs"><Coffee size={16} /> Lifestyle</Link>
             </div>
           </div>
         </div>

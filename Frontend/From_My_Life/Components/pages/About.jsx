@@ -135,7 +135,7 @@ const About = () => {
             <h2>Join Me on This Journey</h2>
             <p>This blog is not just about me — it’s about connecting with you. Let's learn and grow together.</p>
             <div className="about_cta_buttons">
-              <Link to="/blog" className="btn_primary flex_center gap_sm">
+              <Link to="/posts" className="btn_primary flex_center gap_sm">
                 Explore Latest Posts <ArrowRight size={20} />
               </Link>
               <Link to="/contact" className="btn_secondary flex_center gap_sm">
@@ -169,17 +169,17 @@ const About = () => {
           <div className="footer_links_group">
             <h4>Topics</h4>
             <div className="footer_links">
-              <Link to="/category/showcase" className="flex_center gap_xs"><MonitorPlay size={16} /> Showcase</Link>
-              <Link to="/category/education" className="flex_center gap_xs"><BookOpen size={16} /> Education</Link>
-              <Link to="/category/business" className="flex_center gap_xs"><BookOpen size={16} /> Business</Link>
-              <Link to="/category/insight" className="flex_center gap_xs"><Search size={16} /> Insight</Link>
-              <Link to="/category/lifestyle" className="flex_center gap_xs"><Coffee size={16} /> Lifestyle</Link>
+              <Link to="/posts?category=showcase" className="flex_center gap_xs"><MonitorPlay size={16} /> Showcase</Link>
+              <Link to="/posts?category=education" className="flex_center gap_xs"><BookOpen size={16} /> Education</Link>
+              <Link to="/posts?category=business" className="flex_center gap_xs"><BookOpen size={16} /> Business</Link>
+              <Link to="/posts?category=insight" className="flex_center gap_xs"><Search size={16} /> Insight</Link>
+              <Link to="/posts?category=lifestyle" className="flex_center gap_xs"><Coffee size={16} /> Lifestyle</Link>
             </div>
           </div>
         </div>
-      <div className="footer_bottom">
-        <p>&copy; {new Date().getFullYear()} Temesgen &ndash; All rights reserved.</p>
-      </div>
+        <div className="footer_bottom">
+          <p>&copy; {new Date().getFullYear()} Temesgen &ndash; All rights reserved.</p>
+        </div>
       </footer>
     </div>
   );
