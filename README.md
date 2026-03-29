@@ -30,17 +30,42 @@
 
 Whether you're browsing the latest stories, filtering by categories, or subscribing to the newsletter, the seamless integration of a Django REST API and a React SPA ensures instant navigation and a smooth user experience.
 
+<br />
+<div align="center">
+  <img src="./project_images/home.png" alt="Home Page View" width="800" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+</div>
+
+
 ---
 
 ## ✨ Key Features
 
 ### 📖 Reader Experience
+
+<div align="center">
+  <img src="./project_images/post.png" alt="Blog Post View" width="45%" style="border-radius: 10px; margin-right: 2%;" />
+  <img src="./project_images/about.png" alt="About Page" width="45%" style="border-radius: 10px;" />
+</div>
+<br />
+
 - **Dynamic Content:** Read rich-text posts categorized into *Showcase, Education, Business, Insight,* and *Lifestyle*.
 - **Smart Filtering:** URL-synchronized category filtering for seamless link sharing.
 - **Newsletter Subscription:** Custom email opt-in form powered by backend uniqueness validation.
 - **Responsive Aesthetics:** Fluid typography, pixel-perfect UI elements, and glassmorphism elements targeting modern web aesthetics.
 
 ### 🛡️ Admin & Author Dashboard
+
+<div align="center">
+  <img src="./project_images/admin%20dashboard.png" alt="Admin Dashboard" width="45%" style="border-radius: 8px; margin-right: 2%;" />
+  <img src="./project_images/managepost.png" alt="Manage Posts" width="45%" style="border-radius: 8px;" />
+</div>
+<br />
+<div align="center">
+  <img src="./project_images/usermanage.png" alt="User Management" width="45%" style="border-radius: 8px; margin-right: 2%;" />
+  <img src="./project_images/seetting.png" alt="Admin Settings" width="45%" style="border-radius: 8px;" />
+</div>
+<br />
+
 - **Role-Based Access Control (RBAC):** Distinct privileges for Superadmins vs. Authors. Admins can manage the user directory; authors can only manage their own content.
 - **Advanced Metrics:** SVG-based multi-series line charts tracking posts, views, and newsletter subscriptions over time.
 - **Content Management:** Create, draft, and publish articles with a dedicated rich-text editor environment.
