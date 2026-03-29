@@ -5,12 +5,14 @@ from .views import (
     CommentList, CommentDetail,
     NewsletterList, NewsletterDetail,
     MessageList, MessageUpdate, PostImageList, PostImageDetail,
-    UserList, UserDetail
+    UserList, UserDetail, CurrentUserView
 )
 
 urlpatterns = [
     path('users/', UserList.as_view(), name='user-list'),
+    path('users/me/', CurrentUserView.as_view(), name='current-user'),
     path('users/<int:pk>/', UserDetail.as_view(), name='user-detail'),
+
     path('', PostList.as_view(), name='post-list'),
     path('<int:pk>/', PostDetail.as_view(), name='post-detail'),
     path('<int:pk>/like/', PostLike.as_view(), name='post-like'),

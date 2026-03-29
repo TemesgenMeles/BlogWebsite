@@ -1,16 +1,32 @@
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import AllowAny, IsAdminUser
-from .serializers import PostSerializer, PostImageSerializer, CommentSerializer, NewsletterSerializer, MessageSerializer, CatagorySerializer, UserSerializer
+from .serializers import (
+    PostSerializer, PostImageSerializer, CommentSerializer, 
+    NewsletterSerializer, MessageSerializer, CatagorySerializer, 
+    UserSerializer, MyTokenObtainPairSerializer
+)
 from FML_app.models import Post, Catagory, Comment, Newsletter, Message, Post_Image
 from django.contrib.auth.models import User
 
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
 # Create your views here.
-class UserList(generics.ListAPIView):
+class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
     permission_classes = [IsAdminUser]
+
+class CurrentUserView(generics.RetrieveAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [IsAdminUser]
+    
+    def get_object(self):
+        return self.request.user
+
 
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()

@@ -1004,8 +1004,13 @@
 
 /* Loading & Spinners */
 @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .spinning {
@@ -1245,6 +1250,12 @@
     flex-shrink: 0;
 }
 
+.header_actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
 .user_meta {
     display: flex;
     flex-direction: column;
@@ -1259,6 +1270,53 @@
 .user_meta span {
     font-size: 0.75rem;
     color: var(--text-muted);
+}
+
+.active_user_row {
+    background-color: rgba(99, 102, 241, 0.08) !important;
+    border-left: 4px solid var(--primary-color) !important;
+    position: relative;
+}
+
+.active_user_row:hover {
+    background-color: rgba(99, 102, 241, 0.12) !important;
+}
+
+.user_row_active {
+    background-color: rgba(16, 185, 129, 0.05) !important;
+}
+
+.user_row_disabled {
+    background-color: rgba(239, 68, 68, 0.05) !important;
+}
+
+.author_cell {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.user_status_tag {
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+}
+
+.tag_active {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.tag_disabled {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
 }
 
 /* ─── Charts Row Layout ─────────────────────────────────────────── */
@@ -1357,7 +1415,136 @@
     left: 50%;
     transform: translateX(-50%);
     border: 4px solid transparent;
-    border-top-color: rgba(15, 23, 42, 0.95);
 }
+
+/* ─── Standard Admin Modal System ──────────────────────────── */
+.admin_modal_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 20px;
+}
+
+.admin_modal_content {
+    background: var(--bg-white);
+    width: 100%;
+    max-width: 550px;
+    border-radius: 24px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--card-border);
+    overflow: hidden;
+    position: relative;
+    animation: slideUp 0.4s ease-out;
+}
+
+.admin_modal_content .modal_header {
+    padding: 24px 32px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.admin_modal_content .modal_header h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-main);
+}
+
+.admin_modal_content .close_btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 10px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.admin_modal_content .close_btn:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+    transform: rotate(90deg);
+}
+
+.admin_modal_content .modal_form {
+    padding: 32px;
+}
+
+.admin_modal_content .form_grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.admin_modal_content .form_group.full_width {
+    grid-column: span 2;
+}
+
+.admin_modal_content .modal_actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    margin-top: 32px;
+}
+
+.admin_modal_content .permissions_section {
+    margin-top: 24px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+}
+
+.admin_modal_content .permissions_section h3 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    font-weight: 700;
+}
+
+.admin_modal_content .checkbox_group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.admin_modal_content label.checkbox_label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    transition: color 0.2s;
+}
+
+.admin_modal_content label.checkbox_label:hover {
+    color: var(--primary-color);
+}
+
+.admin_modal_content input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    accent-color: var(--primary-color);
+    cursor: pointer;
+}
+
 
 /* ──────────────────────────────────────────────────────────────── */

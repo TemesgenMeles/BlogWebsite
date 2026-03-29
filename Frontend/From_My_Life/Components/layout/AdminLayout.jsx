@@ -124,11 +124,13 @@ const AdminLayout = () => {
                                 <Users size={20} /> Subscribers
                             </NavLink>
                         </li>
-                        <li>
-                            <NavLink to="/admin/users" className={({ isActive }) => `nav_link ${isActive ? 'active' : ''}`}>
-                                <Shield size={20} /> User Directory
-                            </NavLink>
-                        </li>
+                        {user?.is_superuser && (
+                            <li>
+                                <NavLink to="/admin/users" className={({ isActive }) => `nav_link ${isActive ? 'active' : ''}`}>
+                                    <Shield size={20} /> User Directory
+                                </NavLink>
+                            </li>
+                        )}
                         <li>
                             <NavLink to="/admin/settings" className={({ isActive }) => isActive ? 'admin_active' : ''}>
                                 <Settings size={20} /> Settings
