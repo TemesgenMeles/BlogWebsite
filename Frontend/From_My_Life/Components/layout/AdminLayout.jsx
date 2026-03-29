@@ -201,7 +201,12 @@ const AdminLayout = () => {
                         )}
                     </div>
                     <div className="admin_topbar_user">
-                        <span>Welcome, {user?.username || 'Admin'}</span>
+                        <span className="user_name_text">
+                            Welcome, {user?.first_name ? `${user.first_name} ${user.last_name || ''}`.trim() : (user?.username || 'Admin')}
+                        </span>
+                        <span className="user_role_text">
+                            {user?.is_superuser ? 'Admin' : 'Author'}
+                        </span>
                     </div>
                 </header>
                 <div className="admin_content_area">

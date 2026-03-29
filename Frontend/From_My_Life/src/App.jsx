@@ -20,6 +20,7 @@ import ManageMessages from '../Components/pages/ManageMessages'
 import ManageSubscribers from '../Components/pages/ManageSubscribers'
 import Login from '../Components/pages/Login'
 import ManageUsers from '../Components/pages/ManageUsers'
+import ManageSettings from '../Components/pages/ManageSettings'
 import ProtectedRoute from '../Components/utils/ProtectedRoute'
 import { AuthProvider } from './context/AuthContext'
 import { Outlet } from 'react-router-dom'
@@ -59,7 +60,8 @@ function App() {
             <Route path="comments" element={<ManageComments />} />
             <Route path="messages" element={<ManageMessages />} />
             <Route path="subscribers" element={<ManageSubscribers />} />
-            <Route path="users" element={<ManageUsers />} />
+             <Route path="users" element={<ManageUsers />} />
+            <Route path="settings" element={<ManageSettings />} />
           </Route>
         </Route>
       </Route>

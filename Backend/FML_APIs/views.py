@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from rest_framework import generics
+from rest_framework import generics, serializers
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from .serializers import (
     PostSerializer, PostImageSerializer, CommentSerializer, 
     NewsletterSerializer, MessageSerializer, CatagorySerializer, 
@@ -20,18 +20,40 @@ class UserList(generics.ListCreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsAdminUser]
 
-class CurrentUserView(generics.RetrieveAPIView):
+class CurrentUserView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
     
     def get_object(self):
         return self.request.user
+    
+    def perform_update(self, serializer):
+        # Prevent superusers from deactivating themselves
+        if self.request.user.is_superuser and 'is_active' in self.request.data and self.request.data['is_active'] == False:
+            raise serializers.ValidationError({"detail": "Administrators cannot deactivate their own accounts."})
+        serializer.save()
 
 
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAdminUser]
+
+    def perform_destroy(self, instance):
+        # Only superusers can delete accounts
+        if not self.request.user.is_superuser:
+            raise serializers.ValidationError({"detail": "Only administrators can delete accounts."})
+        # Cannot delete yourself
+        if instance.id == self.request.user.id:
+            raise serializers.ValidationError({"detail": "You cannot delete your own account."})
+        instance.delete()
+
+    def perform_update(self, serializer):
+        # Prevent superusers from deactivating themselves via UserDetail
+        instance = self.get_object()
+        if instance.id == self.request.user.id and 'is_active' in self.request.data and self.request.data['is_active'] == False:
+            raise serializers.ValidationError({"detail": "Administrators cannot deactivate their own accounts."})
+        serializer.save()
 
 class PostList(generics.ListCreateAPIView):
     serializer_class = PostSerializer

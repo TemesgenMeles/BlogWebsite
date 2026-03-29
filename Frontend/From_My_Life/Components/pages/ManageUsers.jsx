@@ -179,7 +179,10 @@ const ManageUsers = () => {
     };
 
     const toggleActive = async (user) => {
-        if (user.id === currentUser?.id) return;
+        if (user.id === currentUser?.id) {
+            alert("You cannot deactivate your own account from the User Directory.");
+            return;
+        }
         setProcessingId(user.id);
         try {
             const response = await axiosInstance.patch(`/posts/users/${user.id}/`, {
@@ -194,7 +197,10 @@ const ManageUsers = () => {
     };
 
     const toggleRole = async (user) => {
-        if (user.id === currentUser?.id) return;
+        if (user.id === currentUser?.id) {
+            alert("You cannot change your own role.");
+            return;
+        }
         const newStatus = !user.is_staff;
         const action = newStatus ? 'promote to Staff' : 'demote to Standard';
 
