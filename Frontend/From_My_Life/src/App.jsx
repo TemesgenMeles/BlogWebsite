@@ -24,6 +24,7 @@ import ManageSettings from '../Components/pages/ManageSettings'
 import ProtectedRoute from '../Components/utils/ProtectedRoute'
 import { AuthProvider } from './context/AuthContext'
 import { Outlet } from 'react-router-dom'
+import NotFound from '../Components/pages/NotFound'
 
 const GlobalLayout = () => {
   return (
@@ -64,6 +65,8 @@ function App() {
             <Route path="settings" element={<ManageSettings />} />
           </Route>
         </Route>
+        {/* Catch-all 404 Route */}
+        <Route path="*" element={<NotFound />} />
       </Route>
     )
   )

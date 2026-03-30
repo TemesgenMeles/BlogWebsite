@@ -1,11 +1,5 @@
 :root {
-    --post-card-bg: rgba(0, 0, 0, 0.1);
-}
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        --post-card-bg: rgba(255, 255, 255, 0.1);
-    }
+    --post-card-bg: rgba(255, 255, 255, 0.1);
 }
 
 
@@ -660,10 +654,8 @@
     }
 }
 
-@media (prefers-color-scheme: dark) {
-    .category_card {
-        box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.05), 0 2px 4px -1px rgba(255, 255, 255, 0.03);
-    }
+.category_card {
+    box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.05), 0 2px 4px -1px rgba(255, 255, 255, 0.03);
 }
 
 .category_card:hover {
@@ -698,26 +690,24 @@
     box-shadow: 0 4px 15px -1px rgba(236, 72, 153, 0.2), 0 2px 5px -1px rgba(236, 72, 153, 0.1);
 }
 
-@media (prefers-color-scheme: dark) {
-    .shadow_showcase {
-        box-shadow: 0 4px 15px -1px rgba(139, 92, 246, 0.15), 0 2px 5px -1px rgba(139, 92, 246, 0.1);
-    }
+.shadow_showcase {
+    box-shadow: 0 4px 15px -1px rgba(139, 92, 246, 0.15), 0 2px 5px -1px rgba(139, 92, 246, 0.1);
+}
 
-    .shadow_education {
-        box-shadow: 0 4px 15px -1px rgba(59, 130, 246, 0.15), 0 2px 5px -1px rgba(59, 130, 246, 0.1);
-    }
+.shadow_education {
+    box-shadow: 0 4px 15px -1px rgba(59, 130, 246, 0.15), 0 2px 5px -1px rgba(59, 130, 246, 0.1);
+}
 
-    .shadow_business {
-        box-shadow: 0 4px 15px -1px rgba(245, 158, 11, 0.15), 0 2px 5px -1px rgba(245, 158, 11, 0.1);
-    }
+.shadow_business {
+    box-shadow: 0 4px 15px -1px rgba(245, 158, 11, 0.15), 0 2px 5px -1px rgba(245, 158, 11, 0.1);
+}
 
-    .shadow_insight {
-        box-shadow: 0 4px 15px -1px rgba(16, 185, 129, 0.15), 0 2px 5px -1px rgba(16, 185, 129, 0.1);
-    }
+.shadow_insight {
+    box-shadow: 0 4px 15px -1px rgba(16, 185, 129, 0.15), 0 2px 5px -1px rgba(16, 185, 129, 0.1);
+}
 
-    .shadow_lifestyle {
-        box-shadow: 0 4px 15px -1px rgba(236, 72, 153, 0.15), 0 2px 5px -1px rgba(236, 72, 153, 0.1);
-    }
+.shadow_lifestyle {
+    box-shadow: 0 4px 15px -1px rgba(236, 72, 153, 0.15), 0 2px 5px -1px rgba(236, 72, 153, 0.1);
 }
 
 .category_card:hover.shadow_showcase {
@@ -894,10 +884,8 @@
     border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-@media (prefers-color-scheme: dark) {
-    .footer_bottom {
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
+.footer_bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Icon Utilities */
